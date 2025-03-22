@@ -64,11 +64,13 @@ const userRoutes = require("./routes/userRoutes");
 const policyRoutes = require("./routes/policyRoutes");
 const claimRoutes = require("./routes/claimRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const chatbotRoutes = require("./routes/chatbotRoutes"); 
 
 app.use("/users", userRoutes);
 app.use("/policies", policyRoutes);
 app.use("/claims", claimRoutes);
 app.use("/admin", adminRoutes);
+app.use("/chatbot", chatbotRoutes);
 
 app.get("/", (req, res) => {
     res.send("Welcome to the StateFull Claims Management System!");
