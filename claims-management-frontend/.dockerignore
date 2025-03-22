@@ -1,0 +1,8 @@
+node_modules
+cypress
+build
+.gitignore
+.git
+cypress.config.js
+Dockerfile
+cypress.config.json

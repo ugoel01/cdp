@@ -1,0 +1,365 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Stateful APIs Render",
+    "version": "1.0.0",
+    "description": "OpenAPI documentation converted from Postman collection."
+  },
+  "servers": [
+    {
+      "url": "https://claim-management-system-1-23yj.onrender.com",
+      "description": "Render Backend Server"
+    }
+  ],
+  "paths": {
+    "/users/register": {
+      "post": {
+        "summary": "Register Admin",
+        "description": "Endpoint for Register Admin",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "name": "Admin User",
+                  "email": "adhmin@example.com",
+                  "password": "adminpassword",
+                  "role": "Admin",
+                  "adminKey": "supersecureadminkey"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "summary": "User Login",
+        "description": "Endpoint for User Login",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "email": "john@example.com",
+                  "password": "password123"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/679c672e8c90b0d97e36a13a": {
+      "put": {
+        "summary": "Update User",
+        "description": "Endpoint for Update User",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "name": "John Updated",
+                  "password": "newpassword123"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete User",
+        "description": "Endpoint for Delete User",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/users/policies": {
+      "get": {
+        "summary": "Get All Policies",
+        "description": "Endpoint for Get All Policies",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/users/buy-policy": {
+      "post": {
+        "summary": "Buy Policy",
+        "description": "Endpoint for Buy Policy",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "userId": "1",
+                  "policyId": "101"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/my-policies/679c672e8c90b0d97e36a13a": {
+      "get": {
+        "summary": "Get User Policies",
+        "description": "Endpoint for Get User Policies",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/policies": {
+      "post": {
+        "summary": "Admin Create Policy",
+        "description": "Endpoint for Admin Create Policy",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "policyNumber": "POL123",
+                  "type": "Health",
+                  "coverageAmount": 50000,
+                  "startDate": "2024-01-01",
+                  "endDate": "2025-01-01"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/policies/679c68e58c90b0d97e36a149": {
+      "put": {
+        "summary": "Admin Update Policy",
+        "description": "Endpoint for Admin Update Policy",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "coverageAmount": 60000
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/policies/101": {
+      "delete": {
+        "summary": "Admin Delete Policy",
+        "description": "Endpoint for Admin Delete Policy",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/claims": {
+      "post": {
+        "summary": "File a Claim",
+        "description": "Endpoint for File a Claim",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "userId": "1",
+                  "policyId": "101",
+                  "claimNumber": "C12345",
+                  "amount": 5000,
+                  "dateFiled": "2024-02-01"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/claims/user/679c672e8c90b0d97e36a13a": {
+      "get": {
+        "summary": "Get User Claims",
+        "description": "Endpoint for Get User Claims",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/claims/C12345": {
+      "delete": {
+        "summary": "Cancel Claim",
+        "description": "Endpoint for Cancel Claim",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/purchased-policies": {
+      "get": {
+        "summary": "Admin All Purchased Policy",
+        "description": "Endpoint for Admin All Purchased Policy",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  }
+}

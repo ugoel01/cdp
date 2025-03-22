@@ -1,0 +1,18 @@
+services:
+  frontend:
+    build:
+      context: ./claims-management-frontend
+      dockerfile: ./Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    command: ["npm", "start"]
+
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: ./Dockerfile
+    ports:
+      - "4000:4000"
+    command: ["npm", "run", "dev"]
