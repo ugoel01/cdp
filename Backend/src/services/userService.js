@@ -8,6 +8,8 @@ const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 // const generateWelcomeEmail = require("../services/geminiService");
 const { createContact } = require("./mauticService");
+const { createOrUpdateProfile } = require("../controllers/unomiController");
+
 
 require("dotenv").config()
 
@@ -43,45 +45,91 @@ exports.registerUser = async (data) => {
 
   const newUser = new User({ name, email, password: hashedPassword, role });
   await newUser.save();
-  const contactId = await createContact({ name, email });
+
+  try {
+    // Save to Unomi
+    const [firstName, ...lastNameParts] = name.split(" ");
+    const lastName = lastNameParts.join(" ") || "Unknown";
+    await createOrUpdateProfile({
+      userId: newUser._id.toString(),
+      firstName,
+      lastName,
+      email,
+    });
+    console.log("User profile created/updated in Unomi");
+  } catch (error) {
+    console.error("Failed to save user data to Unomi:", error.message);
+  }
+
+  try {
+    // Optionally create contact in Mautic
+    await createContact({ name, email });
+    console.log("Contact created in Mautic");
+  } catch (error) {
+    console.error("Failed to create contact in Mautic:", error.message);
+  }
 
   return newUser;
 };
 // Login User (Compare Hashed Password)
+// Login User (Compare Hashed Password)
 exports.loginUser = async (email, password) => {
+  try {
+    if (!email || !password) {
+      throw new Error("Please fill all details Carefully");
+    }
 
-  if (!email || !password) {
-    throw new Error("Please fill all details Carefully");
+    email = email.trim().toLowerCase();
+    const user = await User.findOne({ email });
+    if (!user) throw new Error("User not Registered");
+
+    // Compare hashed password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) throw new Error("Invalid email or password.");
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user._id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "2h" }
+    );
+
+    // Update profile in Unomi on login
+    if (user.name) {
+      const [firstName, ...lastNameParts] = user.name.split(" ");
+      const lastName = lastNameParts.join(" ");
+      
+      console.log(`Updating Unomi Profile for User: ${user._id}`);
+      
+      try {
+        await createOrUpdateProfile({
+          userId: user._id.toString(),
+          firstName: firstName || "Unknown",
+          lastName: lastName || "Unknown",
+          email: user.email,
+        });
+      } catch (unomiError) {
+        console.error("Unomi Profile Update Failed:", unomiError.message);
+      }
+    }
+
+    return {
+      message: "Login successful",
+      token,
+      userId: user._id,
+      email: user.email,
+      role: user.role,
+      name: user.name,
+    };
+  } catch (error) {
+    console.error("Login Error:", error.message);
+    throw error;
   }
-
-  email = email.trim().toLowerCase();
-
-  const user = await User.findOne({ email });
-  if (!user) throw new Error("User not Registered");
-
-  // Compare hashed password
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) throw new Error("Invalid email or password.");
-
-  // Generate JWT token
-  const token = jwt.sign(
-    { userId: user._id, email: user.email, role: user.role },
-    process.env.JWT_SECRET,
-    { expiresIn: "2h" }
-  );
-  
-  // Return user details & token
-  return {
-    message: "Login successful",
-    token,
-    userId: user._id,
-    email: user.email,
-    role: user.role,
-    name: user.name,
-  };
 };
 
 // Update User
+const { updateProfile } = require("../controllers/unomiController");
+
 exports.updateUser = async (userId, data) => {
   const user = await User.findById(userId);
   if (!user) throw new Error("User not found.");
@@ -95,25 +143,103 @@ exports.updateUser = async (userId, data) => {
   }
 
   await user.save();
+
+  // Extract first and last names from the name field
+  const [firstName, ...lastNameParts] = user.name.split(" ");
+  const lastName = lastNameParts.join(" ");
+
+  // Update Unomi Profile
+  try {
+    console.log(`Updating Unomi Profile for User ID: ${user._id}`);
+    await updateProfile(user._id.toString(), {
+      firstName: firstName || "Unknown",
+      lastName: lastName || "Unknown",
+      email: user.email,
+    });
+  } catch (unomiError) {
+    console.error("Failed to update Unomi profile:", unomiError.message);
+  }
+
   return user;
 };
 
+
 // Delete User
+// exports.deleteUser = async (userId) => {
+//   // Check if the user exists
+//   const user = await User.findById(userId);
+//   if (!user) throw new Error("User not found.");
+
+//   // Check if user has active policies
+//   const policyholder = await Policyholder.findOne({ userId });
+//   if (policyholder && policyholder.policies.length > 0) {
+//     throw new Error("User cannot be deleted as they have active policies.");
+//   }
+
+//   // Permanently delete user
+//   await User.findByIdAndDelete(userId);
+
+//   return { message: "User account permanently deleted." };
+// };
+const axios = require('axios');
+
 exports.deleteUser = async (userId) => {
-  // Check if the user exists
-  const user = await User.findById(userId);
-  if (!user) throw new Error("User not found.");
+  try {
+    // Check if the user exists
+    const user = await User.findById(userId);
+    if (!user) throw new Error("User not found.");
 
-  // Check if user has active policies
-  const policyholder = await Policyholder.findOne({ userId });
-  if (policyholder && policyholder.policies.length > 0) {
-    throw new Error("User cannot be deleted as they have active policies.");
+    // Check if user has active policies
+    const policyholder = await Policyholder.findOne({ userId });
+    if (policyholder && policyholder.policies.length > 0) {
+      throw new Error("User cannot be deleted as they have active policies.");
+    }
+
+    // Search for profiles in Apache Unomi
+    const searchBody = {
+      condition: {
+        type: "profilePropertyCondition",
+        parameterValues: {
+          propertyName: "properties.userId",
+          comparisonOperator: "equals",
+          propertyValue: userId
+        }
+      }
+    };
+
+    const searchResponse = await axios.post('http://localhost:8181/cxs/profiles/search', searchBody, {
+      headers: {
+        Authorization: `Basic ${Buffer.from('karaf:karaf').toString('base64')}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const profileIds = searchResponse.data.list.map(profile => profile.itemId);
+
+    if (profileIds.length === 0) {
+      console.log('No profiles found for deletion in Unomi.');
+    } else {
+      console.log('Profiles to be deleted:', profileIds);
+
+      // Delete profiles using DELETE API for each profile
+      for (const profileId of profileIds) {
+        await axios.delete(`http://localhost:8181/cxs/profiles/${profileId}`, {
+          headers: {
+            Authorization: `Basic ${Buffer.from('karaf:karaf').toString('base64')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+      }
+      console.log('Profiles deleted successfully.');
+    }
+
+    // Permanently delete user from CMS database
+    await User.findByIdAndDelete(userId);
+    return { message: "User account and associated profiles permanently deleted." };
+  } catch (error) {
+    console.error('Error during deletion:', error.message);
+    throw error;
   }
-
-  // Permanently delete user
-  await User.findByIdAndDelete(userId);
-
-  return { message: "User account permanently deleted." };
 };
 
 // Get All Policies
