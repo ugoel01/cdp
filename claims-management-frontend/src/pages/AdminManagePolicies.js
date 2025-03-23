@@ -27,9 +27,17 @@ function ManagePolicies() {
   }, []);
 
   // Logout function
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await api.post("/users/logout");
+      localStorage.clear();
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Still clear localStorage and redirect even if API call fails
+      localStorage.clear();
+      navigate("/login");
+    }
   };
 
   // ✅ Handle Input Change for Editing

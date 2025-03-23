@@ -1,7 +1,9 @@
 const Claim = require("../models/Claim");
 const Policy = require("../models/Policy");
 const Policyholder = require("../models/Policyholder");
+const User = require("../models/User");
 const mongoose = require("mongoose");
+const sendClaimSubmissionEmail = require("../utils/sendClaimSubmissionEmail");
 
 // Create a New Claim
 exports.createClaim = async ({
@@ -66,7 +68,29 @@ exports.createClaim = async ({
       dateFiled,
     });
 
-    return await newClaim.save();
+    const savedClaim = await newClaim.save();
+
+    // Send claim submission notification email
+    try {
+      // Get user details for email
+      const user = await User.findById(userObjectId);
+      
+      if (user && user.email) {
+        const claimDetails = {
+          claimNumber: savedClaim._id.toString().slice(-8).toUpperCase(),
+          policyType: policy.type,
+          claimAmount: amount,
+          description: "Your insurance claim has been submitted for review"
+        };
+        
+        await sendClaimSubmissionEmail(user.email, user.name, claimDetails);
+      }
+    } catch (error) {
+      console.error("Failed to send claim submission notification:", error);
+      // Continue with claim submission even if email fails
+    }
+
+    return savedClaim;
   } catch (error) {
     throw new Error(error.message || "Error creating claim.");
   }
