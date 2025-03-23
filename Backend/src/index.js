@@ -7,6 +7,7 @@ const cors = require("cors");
 const setupSwagger = require("./swaggerConfig");
 const connectDB = require("./config/database");
 require("dotenv").config();
+require("./reminderCron");
 
 connectDB();
 
