@@ -47,8 +47,29 @@ exports.registerUser = async (data) => {
 
   const newUser = new User({ name, email, password: hashedPassword, role });
   await newUser.save();
-  await sendWelcomeEmail(email, name);
-  await createContact({ name, email });
+
+  try {
+    // Save to Unomi
+    const [firstName, ...lastNameParts] = name.split(" ");
+    const lastName = lastNameParts.join(" ") || "Unknown";
+    await createOrUpdateProfile({
+      userId: newUser._id.toString(),
+      firstName,
+      lastName,
+      email,
+    });
+    console.log("User profile created/updated in Unomi");
+  } catch (error) {
+    console.error("Failed to save user data to Unomi:", error.message);
+  }
+
+  try {
+    // Optionally create contact in Mautic
+    await createContact({ name, email });
+    console.log("Contact created in Mautic");
+  } catch (error) {
+    console.error("Failed to create contact in Mautic:", error.message);
+  }
 
   return newUser;
 };
@@ -67,6 +88,54 @@ exports.loginUser = async (email, password) => {
     // Compare hashed password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw new Error("Invalid email or password.");
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user._id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "2h" }
+    );
+
+    // Update profile in Unomi on login
+    if (user.name) {
+      const [firstName, ...lastNameParts] = user.name.split(" ");
+      const lastName = lastNameParts.join(" ");
+      
+      console.log(`Updating Unomi Profile for User: ${user._id}`);
+      
+      try {
+        await createOrUpdateProfile({
+          userId: user._id.toString(),
+          firstName: firstName || "Unknown",
+          lastName: lastName || "Unknown",
+          email: user.email,
+        });
+      } catch (unomiError) {
+        console.error("Unomi Profile Update Failed:", unomiError.message);
+      }
+    }
+
+    return {
+      message: "Login successful",
+      token,
+      userId: user._id,
+      email: user.email,
+      role: user.role,
+      name: user.name,
+    };
+  } catch (error) {
+    console.error("Login Error:", error.message);
+    throw error;
+  }
+
+  email = email.trim().toLowerCase();
+
+  const user = await User.findOne({ email });
+  if (!user) throw new Error("User not Registered");
+
+  // Compare hashed password
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) throw new Error("Invalid email or password.");
 
   // Generate JWT token
   const token = jwt.sign(
