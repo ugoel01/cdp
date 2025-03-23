@@ -38,7 +38,7 @@ function ManagePolicies() {
   };
 
   // ✅ Handle Update for Coverage Amount & Cost
-  const handleUpdate = async (policyId) => {
+  const handleUpdate = async (policyId, policyNumber) => {
     if (!updatedFields.coverageAmount || !updatedFields.cost) {
       setError("Please enter values for both Coverage Amount and Cost.");
       return;
@@ -46,6 +46,7 @@ function ManagePolicies() {
 
     try {
       await api.put(`/admin/policies/${policyId}`, {
+        policyNumber,
         coverageAmount: updatedFields.coverageAmount,
         cost: updatedFields.cost,
       });
@@ -152,7 +153,7 @@ function ManagePolicies() {
                       className="w-full p-2 border rounded-lg mt-2"
                     />
                     <button
-                      onClick={() => handleUpdate(policy._id)}
+                      onClick={() => handleUpdate(policy._id, policy.policyNumber)}
                       className="mt-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg w-full transition duration-200"
                     >
                       Save Changes

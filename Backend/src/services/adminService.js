@@ -27,11 +27,58 @@ exports.createPolicy = async (data) => {
 };
 
 //Update an Existing Policy (Admin Only)
+// exports.updatePolicy = async (policyId, data) => {
+//   const { policyNumber, coverageAmount, cost } = data;
+
+//     console.log("Policy Number:", policyNumber); // ✅ Print Policy Number
+//     console.log("Policy ID:", policyId);
+//     console.log("Coverage Amount:", coverageAmount);
+//     console.log("Cost:", cost);
+//   const updatedPolicy = await Policy.findByIdAndUpdate(policyId, data, { new: true });
+//   if (!updatedPolicy) throw new Error("Policy not found.");
+//   return updatedPolicy;
+// };
+const axios = require('axios');
+
+
 exports.updatePolicy = async (policyId, data) => {
+  const { policyNumber, coverageAmount, cost } = data;
+
+  console.log("Policy Number:", policyNumber);
+  console.log("Policy ID:", policyId);
+  console.log("Coverage Amount:", coverageAmount);
+  console.log("Cost:", cost);
+
   const updatedPolicy = await Policy.findByIdAndUpdate(policyId, data, { new: true });
   if (!updatedPolicy) throw new Error("Policy not found.");
+
+  // Extract the numeric part from the policyNumber (e.g., '158' from 'POL158')
+  const policyIdNumber = policyNumber.replace(/\D/g, '');
+
+  // ✅ Send Data to Apache Unomi (Profiles) with Authorization
+  try {
+    const response = await axios.post("http://localhost:8181/cxs/profiles", {
+      itemId: `profile${policyIdNumber}`,
+      properties: {
+        policyNumber,
+        coverageAmount,
+      }
+    }, {
+      headers: {
+        Authorization: `Basic ${Buffer.from('karaf:karaf').toString('base64')}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    console.log("Data sent to Apache Unomi:", response.data);
+  } catch (error) {
+    console.error("Error sending data to Apache Unomi:", error?.response?.data || error.message);
+  }
+
   return updatedPolicy;
 };
+
+
 
 //Delete a Policy (Admin Only) - Prevent deletion if purchased by users
 exports.deletePolicy = async (policyId) => {
