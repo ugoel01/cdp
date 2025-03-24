@@ -19,7 +19,6 @@ const sendLoginEmail = async (to, name, loginTime, device) => {
     await sendEmail(to, subject, emailText);
   } catch (error) {
     console.error("Error sending login notification email:", error.message);
-    // We don't throw here to prevent login failures if email sending fails
   }
 };
 

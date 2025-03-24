@@ -7,10 +7,9 @@ const auth = {
   password: process.env.MAUTIC_PASS,
 };
 
-const SEGMENT_ID = 1; 
-
-async function createContact({ name, email }) {
+async function createContact({ name, email, segmentIds }) {
   try {
+    // Create contact
     const res = await axios.post(`${baseURL}/api/contacts/new`, {
       firstname: name,
       email: email,
@@ -18,14 +17,21 @@ async function createContact({ name, email }) {
 
     const contactId = res.data.contact.id;
 
-    // Add contact to the segment
-    await axios.post(`${baseURL}/api/segments/${SEGMENT_ID}/contact/${contactId}/add`, null, { auth });
+    // Handle single or multiple segment IDs
+    if (segmentIds) {
+      const ids = Array.isArray(segmentIds) ? segmentIds : [segmentIds];
+
+      // Add contact to each segment
+      for (const id of ids) {
+        await axios.post(`${baseURL}/api/segments/${id}/contact/${contactId}/add`, null, { auth });
+      }
+    }
 
     return contactId;
   } catch (err) {
     console.error("Mautic createContact error:", err.response?.data || err.message);
+    throw err;
   }
 }
-
 
 module.exports = { createContact };

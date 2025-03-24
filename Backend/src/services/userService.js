@@ -11,9 +11,10 @@ const sendLoginEmail = require("../utils/sendLoginEmail");
 const sendPolicyPurchaseEmail = require("../utils/sendPolicyPurchaseEmail");
 const { createContact } = require("./mauticService");
 
+
 require("dotenv").config()
 
-// Register User (With Password Hashing)
+// Register User 
 exports.registerUser = async (data) => {
   let { name, email, password, role, adminKey } = data;
 
@@ -45,11 +46,17 @@ exports.registerUser = async (data) => {
 
   const newUser = new User({ name, email, password: hashedPassword, role });
   await newUser.save();
+
   await sendWelcomeEmail(email, name);
-  await createContact({ name, email });
+
+  // Only create Mautic contact for regular users
+  if (role === "User") {
+    await createContact({ name, email, segmentIds: 1 });
+  }
 
   return newUser;
 };
+
 // Login User (Compare Hashed Password)
 exports.loginUser = async (email, password) => {
 
@@ -78,11 +85,10 @@ exports.loginUser = async (email, password) => {
     const loginTime = new Date().toLocaleString('en-US', { 
       timeZone: 'Asia/Kolkata' 
     });
-    const device = "Web Browser"; // You can enhance this to detect actual browser/device
+    const device = "Web Browser";
     await sendLoginEmail(user.email, user.name, loginTime, device);
   } catch (error) {
     console.error("Failed to send login notification:", error);
-    // Continue login process even if email fails
   }
 
   // Return user details & token

@@ -30,7 +30,6 @@ const sendPolicyStatusEmail = async (to, name, policyDetails, status) => {
     await sendEmail(to, subject, emailText);
   } catch (error) {
     console.error(`Error sending policy ${status} email:`, error.message);
-    // Log but don't throw to prevent transaction failures if email fails
   }
 };
 

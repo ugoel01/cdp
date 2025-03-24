@@ -9,8 +9,6 @@ const sendPolicyPurchaseEmail = async (to, name, policyDetails) => {
   Include the following policy details:
   - Policy type: ${type}
   - Coverage amount: $${coverageAmount}
-  - Premium: $${premium}
-  - Duration: ${duration} years
   
   The tone should be professional yet warm. Express gratitude for their trust in our company.
   Mention that the policy is pending approval, and they will receive another notification once approved.
@@ -26,7 +24,6 @@ const sendPolicyPurchaseEmail = async (to, name, policyDetails) => {
     await sendEmail(to, subject, emailText);
   } catch (error) {
     console.error("Error sending policy purchase email:", error.message);
-    // Log but don't throw to prevent transaction failures if email fails
   }
 };
 
