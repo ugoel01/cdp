@@ -1,7 +1,9 @@
 const axios = require('axios');
 const base64 = require('base-64');
+require("dotenv").config();
 
-const UNOMI_URL = "http://localhost:8181/cxs/query/profile/count";
+const baseURL = process.env.UNOMI_API_URL;
+const UNOMI_URL = `${baseURL}/cxs/query/profile/count`;
 const AUTH_HEADER = {
   Authorization: `Basic ${base64.encode('karaf:karaf')}`,
   'Content-Type': 'application/json',

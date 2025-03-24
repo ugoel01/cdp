@@ -6830,3 +6830,147 @@
 {"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":22784,"time":"2025-03-24T04:47:00.681Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
 {"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":22784,"time":"2025-03-24T04:47:00.686Z","msg":"Agent state changed from connected to started."}
 {"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":22784,"time":"2025-03-24T04:47:01.687Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":5568,"time":"2025-03-24T05:35:53.712Z","msg":"Using New Relic for Node.js. Agent version: 12.12.0; Node version: v22.13.1."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":5568,"time":"2025-03-24T05:35:53.890Z","msg":"new relic agent control disabled, skipping health reporting","component":"HealthReporter"}
+{"v":0,"level":40,"name":"newrelic","hostname":"Ash","pid":5568,"time":"2025-03-24T05:35:53.943Z","msg":"`feature_flag.opentelemetry_bridge` is not enabled, skipping setup of opentelemetry-bridge","component":"opentelemetry-bridge"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":5568,"time":"2025-03-24T05:35:53.944Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":5568,"time":"2025-03-24T05:35:53.949Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":5568,"time":"2025-03-24T05:35:53.949Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":5568,"time":"2025-03-24T05:35:59.462Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":5568,"time":"2025-03-24T05:35:59.462Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BYrZqMnQMj4bAGHWPFgmb4xn4O98AAgBAAAnIQEAABXAAgRZDiorAwAHMTIuMTIuMAADQXNoABhDbGFpbXMgTWFuYWdlbWVudCBTeXN0ZW0.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":5568,"time":"2025-03-24T05:35:59.462Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6411836/applications/1494100523","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":5568,"time":"2025-03-24T05:35:59.463Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":5568,"time":"2025-03-24T05:35:59.466Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":5568,"time":"2025-03-24T05:36:00.471Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":8140,"time":"2025-03-24T05:38:23.489Z","msg":"Using New Relic for Node.js. Agent version: 12.12.0; Node version: v22.13.1."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":8140,"time":"2025-03-24T05:38:23.669Z","msg":"new relic agent control disabled, skipping health reporting","component":"HealthReporter"}
+{"v":0,"level":40,"name":"newrelic","hostname":"Ash","pid":8140,"time":"2025-03-24T05:38:23.724Z","msg":"`feature_flag.opentelemetry_bridge` is not enabled, skipping setup of opentelemetry-bridge","component":"opentelemetry-bridge"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":8140,"time":"2025-03-24T05:38:23.725Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":8140,"time":"2025-03-24T05:38:23.730Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":8140,"time":"2025-03-24T05:38:23.730Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":8140,"time":"2025-03-24T05:38:29.400Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":8140,"time":"2025-03-24T05:38:29.400Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BSilt1rFpA-SAGHWPFgmb4xn4PAwAAgBAAAnIQEAAB_MAgRZDiorAwAHMTIuMTIuMAADQXNoABhDbGFpbXMgTWFuYWdlbWVudCBTeXN0ZW0.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":8140,"time":"2025-03-24T05:38:29.400Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6411836/applications/1494100523","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":8140,"time":"2025-03-24T05:38:29.402Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":8140,"time":"2025-03-24T05:38:29.407Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":8140,"time":"2025-03-24T05:38:30.412Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":6732,"time":"2025-03-24T05:40:16.921Z","msg":"Using New Relic for Node.js. Agent version: 12.12.0; Node version: v22.13.1."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":6732,"time":"2025-03-24T05:40:17.095Z","msg":"new relic agent control disabled, skipping health reporting","component":"HealthReporter"}
+{"v":0,"level":40,"name":"newrelic","hostname":"Ash","pid":6732,"time":"2025-03-24T05:40:17.149Z","msg":"`feature_flag.opentelemetry_bridge` is not enabled, skipping setup of opentelemetry-bridge","component":"opentelemetry-bridge"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":6732,"time":"2025-03-24T05:40:17.150Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":6732,"time":"2025-03-24T05:40:17.155Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":6732,"time":"2025-03-24T05:40:17.155Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":6732,"time":"2025-03-24T05:40:22.446Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":6732,"time":"2025-03-24T05:40:22.446Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BXSUyrbm6ZhAAGHWPFgmb4xn4PCoAAgBAAAnIQEAABpMAgRZDiorAwAHMTIuMTIuMAADQXNoABhDbGFpbXMgTWFuYWdlbWVudCBTeXN0ZW0.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":6732,"time":"2025-03-24T05:40:22.447Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6411836/applications/1494100523","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":6732,"time":"2025-03-24T05:40:22.448Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":6732,"time":"2025-03-24T05:40:22.452Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":6732,"time":"2025-03-24T05:40:23.458Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":10800,"time":"2025-03-24T05:41:54.274Z","msg":"Using New Relic for Node.js. Agent version: 12.12.0; Node version: v22.13.1."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":10800,"time":"2025-03-24T05:41:54.466Z","msg":"new relic agent control disabled, skipping health reporting","component":"HealthReporter"}
+{"v":0,"level":40,"name":"newrelic","hostname":"Ash","pid":10800,"time":"2025-03-24T05:41:54.523Z","msg":"`feature_flag.opentelemetry_bridge` is not enabled, skipping setup of opentelemetry-bridge","component":"opentelemetry-bridge"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":10800,"time":"2025-03-24T05:41:54.524Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":10800,"time":"2025-03-24T05:41:54.529Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":10800,"time":"2025-03-24T05:41:54.529Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":10800,"time":"2025-03-24T05:41:59.960Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":10800,"time":"2025-03-24T05:41:59.960Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BaOeO2O0SCsEAGHWPFgmb4xn4PDkAAgBAAAnIQEAACowAgRZDiorAwAHMTIuMTIuMAADQXNoABhDbGFpbXMgTWFuYWdlbWVudCBTeXN0ZW0.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":10800,"time":"2025-03-24T05:41:59.960Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6411836/applications/1494100523","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":10800,"time":"2025-03-24T05:41:59.963Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":10800,"time":"2025-03-24T05:41:59.967Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":10800,"time":"2025-03-24T05:42:00.968Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":18732,"time":"2025-03-24T05:45:36.229Z","msg":"Using New Relic for Node.js. Agent version: 12.12.0; Node version: v22.13.1."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":18732,"time":"2025-03-24T05:45:36.501Z","msg":"new relic agent control disabled, skipping health reporting","component":"HealthReporter"}
+{"v":0,"level":40,"name":"newrelic","hostname":"Ash","pid":18732,"time":"2025-03-24T05:45:36.558Z","msg":"`feature_flag.opentelemetry_bridge` is not enabled, skipping setup of opentelemetry-bridge","component":"opentelemetry-bridge"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":18732,"time":"2025-03-24T05:45:36.559Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":18732,"time":"2025-03-24T05:45:36.565Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":18732,"time":"2025-03-24T05:45:36.566Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":18732,"time":"2025-03-24T05:45:41.909Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":18732,"time":"2025-03-24T05:45:41.909Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BYae3oKA8aUmAGHWPFgmb4xn4PHUAAgBAAAnIQEAAEksAgRZDiorAwAHMTIuMTIuMAADQXNoABhDbGFpbXMgTWFuYWdlbWVudCBTeXN0ZW0.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":18732,"time":"2025-03-24T05:45:41.909Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6411836/applications/1494100523","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":18732,"time":"2025-03-24T05:45:41.912Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":18732,"time":"2025-03-24T05:45:41.915Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":18732,"time":"2025-03-24T05:45:42.920Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":16680,"time":"2025-03-24T05:46:01.890Z","msg":"Using New Relic for Node.js. Agent version: 12.12.0; Node version: v22.13.1."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":16680,"time":"2025-03-24T05:46:02.069Z","msg":"new relic agent control disabled, skipping health reporting","component":"HealthReporter"}
+{"v":0,"level":40,"name":"newrelic","hostname":"Ash","pid":16680,"time":"2025-03-24T05:46:02.124Z","msg":"`feature_flag.opentelemetry_bridge` is not enabled, skipping setup of opentelemetry-bridge","component":"opentelemetry-bridge"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":16680,"time":"2025-03-24T05:46:02.125Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":16680,"time":"2025-03-24T05:46:02.130Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":16680,"time":"2025-03-24T05:46:02.130Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":16680,"time":"2025-03-24T05:46:04.963Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":16680,"time":"2025-03-24T05:46:04.964Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BQkCBpj2taYxAGHWPFgmb4xn4PIQAAgBAAAnIQEAAEEoAgRZDiorAwAHMTIuMTIuMAADQXNoABhDbGFpbXMgTWFuYWdlbWVudCBTeXN0ZW0.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":16680,"time":"2025-03-24T05:46:04.964Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6411836/applications/1494100523","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":16680,"time":"2025-03-24T05:46:04.965Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":16680,"time":"2025-03-24T05:46:04.969Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":16680,"time":"2025-03-24T05:46:05.975Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":5996,"time":"2025-03-24T05:47:25.161Z","msg":"Using New Relic for Node.js. Agent version: 12.12.0; Node version: v22.13.1."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":5996,"time":"2025-03-24T05:47:25.345Z","msg":"new relic agent control disabled, skipping health reporting","component":"HealthReporter"}
+{"v":0,"level":40,"name":"newrelic","hostname":"Ash","pid":5996,"time":"2025-03-24T05:47:25.402Z","msg":"`feature_flag.opentelemetry_bridge` is not enabled, skipping setup of opentelemetry-bridge","component":"opentelemetry-bridge"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":5996,"time":"2025-03-24T05:47:25.402Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":5996,"time":"2025-03-24T05:47:25.413Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":5996,"time":"2025-03-24T05:47:25.413Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":5996,"time":"2025-03-24T05:47:28.147Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":5996,"time":"2025-03-24T05:47:28.147Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BU8iXLmVYWqDAGHWPFgmb4xn4PJMAAgBAAAnIQEAABdsAgRZDiorAwAHMTIuMTIuMAADQXNoABhDbGFpbXMgTWFuYWdlbWVudCBTeXN0ZW0.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":5996,"time":"2025-03-24T05:47:28.147Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6411836/applications/1494100523","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":5996,"time":"2025-03-24T05:47:28.148Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":5996,"time":"2025-03-24T05:47:28.152Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":5996,"time":"2025-03-24T05:47:29.156Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":17212,"time":"2025-03-24T05:49:21.724Z","msg":"Using New Relic for Node.js. Agent version: 12.12.0; Node version: v22.13.1."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":17212,"time":"2025-03-24T05:49:21.904Z","msg":"new relic agent control disabled, skipping health reporting","component":"HealthReporter"}
+{"v":0,"level":40,"name":"newrelic","hostname":"Ash","pid":17212,"time":"2025-03-24T05:49:21.957Z","msg":"`feature_flag.opentelemetry_bridge` is not enabled, skipping setup of opentelemetry-bridge","component":"opentelemetry-bridge"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":17212,"time":"2025-03-24T05:49:21.958Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":17212,"time":"2025-03-24T05:49:21.963Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":17212,"time":"2025-03-24T05:49:21.963Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":17212,"time":"2025-03-24T05:49:24.518Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":17212,"time":"2025-03-24T05:49:24.518Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BXdsUDqUuhCwAGHWPFgmb4xn4PLEAAgBAAAnIQEAAEM8AgRZDiorAwAHMTIuMTIuMAADQXNoABhDbGFpbXMgTWFuYWdlbWVudCBTeXN0ZW0.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":17212,"time":"2025-03-24T05:49:24.518Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6411836/applications/1494100523","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":17212,"time":"2025-03-24T05:49:24.520Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":17212,"time":"2025-03-24T05:49:24.524Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":17212,"time":"2025-03-24T05:49:25.525Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":14828,"time":"2025-03-24T05:49:27.573Z","msg":"Using New Relic for Node.js. Agent version: 12.12.0; Node version: v22.13.1."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":14828,"time":"2025-03-24T05:49:27.750Z","msg":"new relic agent control disabled, skipping health reporting","component":"HealthReporter"}
+{"v":0,"level":40,"name":"newrelic","hostname":"Ash","pid":14828,"time":"2025-03-24T05:49:27.804Z","msg":"`feature_flag.opentelemetry_bridge` is not enabled, skipping setup of opentelemetry-bridge","component":"opentelemetry-bridge"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":14828,"time":"2025-03-24T05:49:27.805Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":14828,"time":"2025-03-24T05:49:27.810Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":14828,"time":"2025-03-24T05:49:27.810Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":14828,"time":"2025-03-24T05:49:30.911Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":14828,"time":"2025-03-24T05:49:30.911Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BUy1kkub5tcBAGHWPFgmb4xn4PLEAAgBAAAnIQEAADnsAgRZDiorAwAHMTIuMTIuMAADQXNoABhDbGFpbXMgTWFuYWdlbWVudCBTeXN0ZW0.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":14828,"time":"2025-03-24T05:49:30.911Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6411836/applications/1494100523","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":14828,"time":"2025-03-24T05:49:30.912Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":14828,"time":"2025-03-24T05:49:30.916Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":14828,"time":"2025-03-24T05:49:31.930Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":25184,"time":"2025-03-24T05:50:41.250Z","msg":"Using New Relic for Node.js. Agent version: 12.12.0; Node version: v22.13.1."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":25184,"time":"2025-03-24T05:50:41.432Z","msg":"new relic agent control disabled, skipping health reporting","component":"HealthReporter"}
+{"v":0,"level":40,"name":"newrelic","hostname":"Ash","pid":25184,"time":"2025-03-24T05:50:41.485Z","msg":"`feature_flag.opentelemetry_bridge` is not enabled, skipping setup of opentelemetry-bridge","component":"opentelemetry-bridge"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":25184,"time":"2025-03-24T05:50:41.485Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":25184,"time":"2025-03-24T05:50:41.490Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":25184,"time":"2025-03-24T05:50:41.490Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":25184,"time":"2025-03-24T05:50:43.926Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":25184,"time":"2025-03-24T05:50:43.926Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BZ4hgJziuuCmAGHWPFgmb4xn4PMAAAgBAAAnIQEAAGJgAgRZDiorAwAHMTIuMTIuMAADQXNoABhDbGFpbXMgTWFuYWdlbWVudCBTeXN0ZW0.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":25184,"time":"2025-03-24T05:50:43.926Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6411836/applications/1494100523","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":25184,"time":"2025-03-24T05:50:43.927Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":25184,"time":"2025-03-24T05:50:43.932Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":25184,"time":"2025-03-24T05:50:44.937Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":3960,"time":"2025-03-24T06:24:50.809Z","msg":"Using New Relic for Node.js. Agent version: 12.12.0; Node version: v22.13.1."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":3960,"time":"2025-03-24T06:24:50.989Z","msg":"new relic agent control disabled, skipping health reporting","component":"HealthReporter"}
+{"v":0,"level":40,"name":"newrelic","hostname":"Ash","pid":3960,"time":"2025-03-24T06:24:51.043Z","msg":"`feature_flag.opentelemetry_bridge` is not enabled, skipping setup of opentelemetry-bridge","component":"opentelemetry-bridge"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":3960,"time":"2025-03-24T06:24:51.044Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":3960,"time":"2025-03-24T06:24:51.048Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":3960,"time":"2025-03-24T06:24:51.048Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":3960,"time":"2025-03-24T06:24:54.165Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":3960,"time":"2025-03-24T06:24:54.165Z","msg":"Connected to collector.newrelic.com:443 with agent run ID BR78_3_bFop8AGHWPFgmb4xn4Pr4AAgBAAAnIQEAAA94AgRZDiorAwAHMTIuMTIuMAADQXNoABhDbGFpbXMgTWFuYWdlbWVudCBTeXN0ZW0.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":3960,"time":"2025-03-24T06:24:54.165Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6411836/applications/1494100523","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":3960,"time":"2025-03-24T06:24:54.166Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":3960,"time":"2025-03-24T06:24:54.170Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":3960,"time":"2025-03-24T06:24:55.182Z","msg":"Starting initial 1000ms harvest."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":9508,"time":"2025-03-24T06:32:49.198Z","msg":"Using New Relic for Node.js. Agent version: 12.12.0; Node version: v22.13.1."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":9508,"time":"2025-03-24T06:32:49.394Z","msg":"new relic agent control disabled, skipping health reporting","component":"HealthReporter"}
+{"v":0,"level":40,"name":"newrelic","hostname":"Ash","pid":9508,"time":"2025-03-24T06:32:49.463Z","msg":"`feature_flag.opentelemetry_bridge` is not enabled, skipping setup of opentelemetry-bridge","component":"opentelemetry-bridge"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":9508,"time":"2025-03-24T06:32:49.465Z","msg":"Agent state changed from stopped to starting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":9508,"time":"2025-03-24T06:32:49.474Z","msg":"Starting New Relic for Node.js connection process."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":9508,"time":"2025-03-24T06:32:49.474Z","msg":"Agent state changed from starting to connecting."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":9508,"time":"2025-03-24T06:32:53.231Z","msg":"Agent state changed from connecting to connected."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":9508,"time":"2025-03-24T06:32:53.232Z","msg":"Connected to collector.newrelic.com:443 with agent run ID Bb0LYN2_whiPAGHWPFgmb4xn4PzYAAgBAAAnIQEAACUkAgRZDiorAwAHMTIuMTIuMAADQXNoABhDbGFpbXMgTWFuYWdlbWVudCBTeXN0ZW0.","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":9508,"time":"2025-03-24T06:32:53.232Z","msg":"Reporting to: https://rpm.newrelic.com/accounts/6411836/applications/1494100523","component":"collector_api"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":9508,"time":"2025-03-24T06:32:53.234Z","msg":"Valid event_harvest_config received. Updating harvest cycles. {\"report_period_ms\":5000,\"harvest_limits\":{\"error_event_data\":8,\"log_event_data\":833,\"analytic_event_data\":833,\"custom_event_data\":250}}"}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":9508,"time":"2025-03-24T06:32:53.237Z","msg":"Agent state changed from connected to started."}
+{"v":0,"level":30,"name":"newrelic","hostname":"Ash","pid":9508,"time":"2025-03-24T06:32:54.248Z","msg":"Starting initial 1000ms harvest."}

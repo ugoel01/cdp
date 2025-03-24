@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import api from "../api";
-
+const baseURL = process.env.REACT_APP_UNOMI_API_URL;
 function BuyPolicy() {
   const navigate = useNavigate();
   const [policies, setPolicies] = useState([]);
@@ -63,7 +63,7 @@ function BuyPolicy() {
     };
 
     try {
-      const response = await fetch("http://localhost:8181/cxs/eventcollector", {
+      const response = await fetch(`${baseURL}/cxs/eventcollector`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(eventPayload),

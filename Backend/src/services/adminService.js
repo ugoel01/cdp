@@ -5,6 +5,9 @@ const Policyholder = require("../models/Policyholder");
 const sendEmail = require("../utils/sendEmail");
 const PolicyRequest = require("../models/PolicyRequest");
 const axios = require('axios');
+require("dotenv").config();
+
+const baseURL = process.env.UNOMI_API_URL;
 
 // Create a New Policy (Admin Only)
 exports.createPolicy = async (data) => {
@@ -30,7 +33,7 @@ exports.createPolicy = async (data) => {
 
   // ✅ Send Data to Apache Unomi (Profiles) with Authorization
   try {
-    const response = await axios.post("http://localhost:8181/cxs/profiles", {
+    const response = await axios.post(`${baseURL}/cxs/profiles`, {
       itemId: `profile${policyIdNumber}`,
       properties: {
         policyNumber,
@@ -67,7 +70,7 @@ exports.updatePolicy = async (policyId, data) => {
 
   // ✅ Send Data to Apache Unomi (Profiles) with Authorization
   try {
-    const response = await axios.post("http://localhost:8181/cxs/profiles", {
+    const response = await axios.post(`${baseURL}/cxs/profiles`, {
       itemId: `profile${policyIdNumber}`,
       properties: {
         policyNumber,
@@ -162,7 +165,7 @@ exports.updateClaimStatus = async (claimId, status) => {
   console.log(claim.dateFiled)
   console.log(claim.status)
   try {
-    const response = await axios.post("http://localhost:8181/cxs/profiles", {
+    const response = await axios.post(`${baseURL}/cxs/profiles`, {
       itemId: `claim${claimId}`,
       properties: {
         userInfo: claim.userId.toString(),
@@ -244,7 +247,7 @@ exports.approvePolicyPurchase = async (requestId, action) => {
     }
     
     try {
-      const response = await axios.post("http://localhost:8181/cxs/profiles", {
+      const response = await axios.post(`${baseURL}/cxs/profiles`, {
         itemId: `pp${policy._id}`,
         properties: {
           _id: policy._id,

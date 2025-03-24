@@ -24,8 +24,18 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
-    <!-- Apache Unomi Tracking Script -->
-    <script src="http://localhost:8181/context.js"></script>
+    <!-- Apache Unomi Tracking Script with Environment Variable Support -->
+    <script>
+      const unomiBaseURL = "%REACT_APP_UNOMI_API_URL%" || "http://localhost:8181";
+      console.log("Using Unomi API URL:", unomiBaseURL);
+
+      const script = document.createElement('script');
+      script.src = `${unomiBaseURL}/context.js`;
+      script.onload = () => console.log("Apache Unomi initialized.");
+      script.onerror = () => console.error("Failed to load Apache Unomi.");
+      document.body.appendChild(script);
+    </script>
+
     <script>
       window.cxs = window.cxs || {};
 

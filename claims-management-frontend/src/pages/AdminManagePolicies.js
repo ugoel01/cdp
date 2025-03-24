@@ -4,6 +4,8 @@ import api from "../api";
 import axios from 'axios';
 
 
+const baseURL = process.env.UNOMI_API_URL;
+
 function ManagePolicies() {
   const navigate = useNavigate();
   const [policies, setPolicies] = useState([]);
@@ -88,7 +90,7 @@ const handleDelete = async (policyId, policyNumber) => {
     const policyIdNumber = policyNumber.replace(/\D/g, '');
     // ✅ Send Data to Apache Unomi (Profiles) with Authorization
     try {
-      const response = await axios.delete(`http://localhost:8181/cxs/profiles/profile${policyIdNumber}`, {
+      const response = await axios.delete(`${baseURL}/cxs/profiles/profile${policyIdNumber}`, {
         headers: {
           Authorization: `Basic ${btoa('karaf:karaf')}`, // ✅ Use btoa for Base64
           'Content-Type': 'application/json'

@@ -12,8 +12,9 @@ const sendPolicyPurchaseEmail = require("../utils/sendPolicyPurchaseEmail");
 const { createContact } = require("./mauticService");
 const { createOrUpdateProfile } = require("../controllers/unomiController");
 
-
 require("dotenv").config()
+
+const baseURL = process.env.UNOMI_API_URL;
 
 // Register User (With Password Hashing)
 exports.registerUser = async (data) => {
@@ -247,7 +248,7 @@ exports.deleteUser = async (userId) => {
       }
     };
 
-    const searchResponse = await axios.post('http://localhost:8181/cxs/profiles/search', searchBody, {
+    const searchResponse = await axios.post(`${baseURL}/cxs/profiles/search`, searchBody, {
       headers: {
         Authorization: `Basic ${Buffer.from('karaf:karaf').toString('base64')}`,
         'Content-Type': 'application/json'
@@ -263,7 +264,7 @@ exports.deleteUser = async (userId) => {
 
       // Delete profiles using DELETE API for each profile
       for (const profileId of profileIds) {
-        await axios.delete(`http://localhost:8181/cxs/profiles/${profileId}`, {
+        await axios.delete(`${baseURL}/cxs/profiles/${profileId}`, {
           headers: {
             Authorization: `Basic ${Buffer.from('karaf:karaf').toString('base64')}`,
             'Content-Type': 'application/json'
