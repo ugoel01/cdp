@@ -13,7 +13,7 @@ import {
   LinearScale,
   BarElement
 } from "chart.js";
-
+ 
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -22,7 +22,7 @@ ChartJS.register(
   LinearScale,
   BarElement
 );
-
+ 
 function AdminDashboard() {
   const navigate = useNavigate();
   const [section, setSection] = useState("analytics");
@@ -34,8 +34,15 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showChatbot, setShowChatbot] = useState(false);
+  const [analyticsData, setAnalyticsData] = useState({
+    mostClickedPolicy: { name: "N/A", clicks: 0 },
+    averageInteractionTime: "0 minutes",
+    totalUserSessions: 0,
+    mostVisitedPolicyType: { type: "N/A", visits: 0 },
+    claimApprovalRate: 0
+  });
   const { showError } = useNotification();
-
+ 
   const handleLogout = async () => {
     try {
       await api.post("/users/logout");
@@ -47,33 +54,47 @@ function AdminDashboard() {
       navigate("/login");
     }
   };
-
+ 
   useEffect(() => {
     fetchData();
   }, []);
-
+ 
   const fetchData = async () => {
     try {
       setLoading(true);
+      // First fetch the main data
       const [policiesRes, purchasedRes, claimsRes, requestsRes] = await Promise.all([
         api.get("/admin/policies"),
         api.get("/admin/purchased-policies"),
         api.get("/admin/claims"),
         api.get("/admin/pending-requests")
       ]);
+ 
       setPolicies(policiesRes.data || []);
       setPurchasedPolicies(purchasedRes.data || []);
       setClaims(claimsRes.data || []);
       setPendingRequests(requestsRes.data || []);
-
+ 
       const uniqueUsers = new Set();
       purchasedRes.data?.forEach((p) => uniqueUsers.add(p.userId));
       setUsers(uniqueUsers.size);
+ 
+      // Then try to fetch analytics data separately
+      try {
+        const analyticsRes = await api.get("/admin/analytics");
+        if (analyticsRes.data) {
+          setAnalyticsData(analyticsRes.data);
+        }
+      } catch (analyticsErr) {
+        console.log("Analytics data not available yet:", analyticsErr);
+        // Don't set error state for analytics failure
+      }
+ 
     } catch (err) {
       const errorMessage = err.response?.data?.message || err.response?.data?.error || "Failed to fetch admin data.";
       setError(errorMessage);
       showError(errorMessage);
-      
+     
       if (err.response && err.response.status === 401) {
         showError("Your session has expired. Please login again.");
         handleLogout();
@@ -82,13 +103,13 @@ function AdminDashboard() {
       setLoading(false);
     }
   };
-
+ 
   const policyTypeCount = {};
   policies.forEach((p) => {
     const type = p.type || "Unknown";
     policyTypeCount[type] = (policyTypeCount[type] || 0) + 1;
   });
-
+ 
   const claimStatusCount = {
     Pending: 0,
     Approved: 0,
@@ -97,7 +118,7 @@ function AdminDashboard() {
   claims.forEach((c) => {
     claimStatusCount[c.status || "Pending"] += 1;
   });
-
+ 
   const policyChartData = {
     labels: Object.keys(policyTypeCount),
     datasets: [
@@ -108,7 +129,7 @@ function AdminDashboard() {
       }
     ]
   };
-
+ 
   const claimChartData = {
     labels: Object.keys(claimStatusCount),
     datasets: [
@@ -120,7 +141,7 @@ function AdminDashboard() {
       }
     ]
   };
-
+ 
   const SectionTabs = () => (
     <div className="flex flex-wrap gap-4 justify-center mt-6">
       <button
@@ -149,7 +170,7 @@ function AdminDashboard() {
       </button>
     </div>
   );
-
+ 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-white relative flex flex-col">
       {/* Admin Navbar */}
@@ -166,15 +187,15 @@ function AdminDashboard() {
           </button>
         </div>
       </nav>
-
+ 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto p-6 w-full">
         {error && (
           <div className="bg-red-100 text-red-700 p-4 mb-4 rounded-md">{error}</div>
         )}
-
+ 
         <SectionTabs />
-
+ 
         {loading ? (
           <div className="text-center mt-10">
             <div className="animate-spin h-10 w-10 border-t-4 border-blue-500 rounded-full mx-auto mb-4"></div>
@@ -183,22 +204,52 @@ function AdminDashboard() {
         ) : (
           <>
             {section === "analytics" && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                <div className="bg-white p-6 rounded-lg shadow">
-                  <h2 className="text-xl font-semibold mb-4">Policies by Type</h2>
-                  <div className="h-64">
-                    <Pie data={policyChartData} options={{ responsive: true, maintainAspectRatio: false }} />
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+                  <div className="bg-white p-6 rounded-lg shadow">
+                    <h3 className="text-lg font-semibold text-gray-700 mb-2">Most Clicked Policy</h3>
+                    <p className="text-2xl font-bold text-blue-600">{analyticsData.mostClickedPolicy.name}</p>
+                    <p className="text-sm text-gray-500">{analyticsData.mostClickedPolicy.clicks} clicks</p>
+                  </div>
+                  <div className="bg-white p-6 rounded-lg shadow">
+                    <h3 className="text-lg font-semibold text-gray-700 mb-2">Average Interaction Time</h3>
+                    <p className="text-2xl font-bold text-green-600">{analyticsData.averageInteractionTime}</p>
+                    <p className="text-sm text-gray-500">per user session</p>
+                  </div>
+                  <div className="bg-white p-6 rounded-lg shadow">
+                    <h3 className="text-lg font-semibold text-gray-700 mb-2">Total User Sessions</h3>
+                    <p className="text-2xl font-bold text-purple-600">{analyticsData.totalUserSessions}</p>
+                    <p className="text-sm text-gray-500">in the last 30 days</p>
+                  </div>
+                  <div className="bg-white p-6 rounded-lg shadow">
+                    <h3 className="text-lg font-semibold text-gray-700 mb-2">Most Visited Policy Type</h3>
+                    <p className="text-2xl font-bold text-orange-600">{analyticsData.mostVisitedPolicyType.type}</p>
+                    <p className="text-sm text-gray-500">{analyticsData.mostVisitedPolicyType.visits} visits</p>
+                  </div>
+                  <div className="bg-white p-6 rounded-lg shadow">
+                    <h3 className="text-lg font-semibold text-gray-700 mb-2">Claim Approval Rate</h3>
+                    <p className="text-2xl font-bold text-indigo-600">{analyticsData.claimApprovalRate}%</p>
+                    <p className="text-sm text-gray-500">of total claims</p>
                   </div>
                 </div>
-                <div className="bg-white p-6 rounded-lg shadow">
-                  <h2 className="text-xl font-semibold mb-4">Claims by Status</h2>
-                  <div className="h-64">
-                    <Bar data={claimChartData} options={{ responsive: true, maintainAspectRatio: false }} />
+ 
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                  <div className="bg-white p-6 rounded-lg shadow">
+                    <h2 className="text-xl font-semibold mb-4">Policies by Type</h2>
+                    <div className="h-64">
+                      <Pie data={policyChartData} options={{ responsive: true, maintainAspectRatio: false }} />
+                    </div>
+                  </div>
+                  <div className="bg-white p-6 rounded-lg shadow">
+                    <h2 className="text-xl font-semibold mb-4">Claims by Status</h2>
+                    <div className="h-64">
+                      <Bar data={claimChartData} options={{ responsive: true, maintainAspectRatio: false }} />
+                    </div>
                   </div>
                 </div>
-              </div>
+              </>
             )}
-
+ 
             {section === "purchased" && (
               <div className="mt-8">
                 <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">📋 All Purchased Policies</h2>
@@ -237,7 +288,7 @@ function AdminDashboard() {
                 ))}
               </div>
             )}
-
+ 
             {section === "claims" && (
               <div className="mt-8">
                 <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">📂 Recent Claims</h2>
@@ -252,21 +303,23 @@ function AdminDashboard() {
                       </tr>
                     </thead>
                     <tbody>
-                      {claims.slice(0, 10).map((claim) => (
+                      {claims
+                        .sort((a, b) => new Date(b.dateFiled) - new Date(a.dateFiled))
+                        .slice(0, 10)
+                        .map((claim) => (
                         <tr key={claim._id} className="hover:bg-gray-100">
                           <td className="px-4 py-2">{claim._id.slice(0, 8)}</td>
                           <td className="px-4 py-2">${claim.amount || 0}</td>
                           <td className="px-4 py-2">{claim.status}</td>
                           <td className="px-4 py-2">
-  {claim.dateFiled
-    ? new Intl.DateTimeFormat("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric"
-      }).format(new Date(claim.dateFiled))
-    : "N/A"}
-</td>
-
+                            {claim.dateFiled
+                              ? new Intl.DateTimeFormat("en-US", {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric"
+                                }).format(new Date(claim.dateFiled))
+                              : "N/A"}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -277,19 +330,19 @@ function AdminDashboard() {
           </>
         )}
       </main>
-
+ 
       {/* Chatbot Button */}
-      <button 
+      <button
         className="fixed bottom-6 right-6 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition flex items-center justify-center w-14 h-14"
         onClick={() => setShowChatbot(!showChatbot)}
       >
         <img src="/chatbot.png" alt="chatbot-icon" className="w-8 h-8" />
       </button>
-
+ 
       {/* Chatbot Component */}
       {showChatbot && <Chatbot setShowChatbot={setShowChatbot} />}
     </div>
   );
 }
-
+ 
 export default AdminDashboard;

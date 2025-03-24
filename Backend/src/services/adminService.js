@@ -33,7 +33,7 @@ exports.createPolicy = async (data) => {
   // Extract the numeric part from the policyNumber (e.g., '158' from 'POL158')
   const policyIdNumber = policyNumber.replace(/\D/g, '');
 
-  // ✅ Send Data to Apache Unomi (Profiles) with Authorization
+  //Send Data to Apache Unomi (Profiles) with Authorization
   try {
     const response = await axios.post(`${baseURL}/cxs/profiles`, {
       itemId: `profile${policyIdNumber}`,
