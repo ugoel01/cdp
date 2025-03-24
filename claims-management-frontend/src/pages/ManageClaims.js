@@ -26,9 +26,17 @@ function ManageClaims() {
   }, []);
 
   // ✅ Handle Logout
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await api.post("/users/logout");
+      localStorage.clear();
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Still clear localStorage and redirect even if API call fails
+      localStorage.clear();
+      navigate("/login");
+    }
   };
 
   // ✅ Handle Approve or Reject Claim

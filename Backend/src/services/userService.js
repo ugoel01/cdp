@@ -6,7 +6,9 @@ const PolicyRequest = require("../models/PolicyRequest");
 const jwt = require("jsonwebtoken")
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
-// const generateWelcomeEmail = require("../services/geminiService");
+const sendWelcomeEmail = require("../utils/sendWelcomeEmail");
+const sendLoginEmail = require("../utils/sendLoginEmail");
+const sendPolicyPurchaseEmail = require("../utils/sendPolicyPurchaseEmail");
 const { createContact } = require("./mauticService");
 const { createOrUpdateProfile } = require("../controllers/unomiController");
 
@@ -125,6 +127,44 @@ exports.loginUser = async (email, password) => {
     console.error("Login Error:", error.message);
     throw error;
   }
+
+  email = email.trim().toLowerCase();
+
+  const user = await User.findOne({ email });
+  if (!user) throw new Error("User not Registered");
+
+  // Compare hashed password
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) throw new Error("Invalid email or password.");
+
+  // Generate JWT token
+  const token = jwt.sign(
+    { userId: user._id, email: user.email, role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: "2h" }
+  );
+  
+  // Send login notification email
+  try {
+    const loginTime = new Date().toLocaleString('en-US', { 
+      timeZone: 'Asia/Kolkata' 
+    });
+    const device = "Web Browser"; // You can enhance this to detect actual browser/device
+    await sendLoginEmail(user.email, user.name, loginTime, device);
+  } catch (error) {
+    console.error("Failed to send login notification:", error);
+    // Continue login process even if email fails
+  }
+
+  // Return user details & token
+  return {
+    message: "Login successful",
+    token,
+    userId: user._id,
+    email: user.email,
+    role: user.role,
+    name: user.name,
+  };
 };
 
 // Update User
@@ -273,11 +313,23 @@ exports.buyPolicy = async (userId, policyId, startDate, endDate) => {
 
   await policyRequest.save();
 
+  // Send policy purchase email notification
+  try {
+    const policyDetails = {
+      type: policy.type,
+      coverageAmount: policy.coverageAmount,
+      premium: policy.premium,
+      duration: policy.duration
+    };
+    
+    await sendPolicyPurchaseEmail(user.email, user.name, policyDetails);
+  } catch (error) {
+    console.error("Failed to send policy purchase notification:", error);
+    // Continue with policy purchase even if email fails
+  }
+
   return { message: "Your policy request has been submitted for admin approval." };
 };
-
-
-
 
 // Get User's Purchased Policies
 exports.getUserPolicies = async (userId) => {
@@ -292,7 +344,6 @@ exports.getUserPolicies = async (userId) => {
 
   return policyholder.policies;
 };
-
 
 // Forgot Password (Send Email with Reset Link)
 exports.forgotPassword = async (email) => {

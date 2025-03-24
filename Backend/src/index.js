@@ -10,6 +10,7 @@ const unomiRoute = require('./routes/unomiRoutes');
 const unomiController = require('./controllers/unomiController'); 
 
 require("dotenv").config();
+require("./reminderCron");
 
 
 connectDB();

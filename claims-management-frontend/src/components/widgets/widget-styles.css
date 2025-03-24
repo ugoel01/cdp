@@ -1,0 +1,58 @@
+/* Widget custom styles - most styling now handled by Tailwind CSS */
+
+/* Custom transitions and animations */
+.widget-transition {
+  transition: all 0.3s ease;
+}
+
+.widget-hover-effect:hover {
+  transform: translateY(-2px);
+}
+
+/* Chart styling adjustments */
+.chart-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Animation for loading states */
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+.pulse-animation {
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+/* Data table custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+/* Widget drag handle style */
+.drag-handle {
+  cursor: move;
+}

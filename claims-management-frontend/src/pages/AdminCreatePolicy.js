@@ -47,41 +47,49 @@ function CreatePolicy() {
   };
 
   // Logout function
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await api.post("/users/logout");
+      localStorage.clear();
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Still clear localStorage and redirect even if API call fails
+      localStorage.clear();
+      navigate("/login");
+    }
   };
 
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col">
       
-      {/* ✅ Navbar */}
+      {/* Navbar */}
       <nav className="bg-blue-700 text-white px-6 py-4 shadow-md flex justify-between items-center">
         <h1 className="text-xl font-bold">Admin Panel</h1>
 
         <div className="flex space-x-6">
           <button onClick={() => navigate("/admin-dashboard")} className="hover:text-gray-300 transition">
-            🏠 Dashboard
+            Dashboard
           </button>
           <button onClick={() => navigate("/admin/manage-policies")} className="hover:text-gray-300 transition">
-            📜 Manage Policies
+            Manage Policies
           </button>
           <button onClick={() => navigate("/admin/manage-claims")} className="hover:text-gray-300 transition">
-            📂 Manage Claims
+            Manage Claims
           </button>
           <button onClick={() => navigate("/admin/create-policy")} className="hover:text-gray-300 transition">
-            ➕ Create Policy
+            Create Policy
           </button>
           <button 
             onClick={handleLogout} 
             className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-md transition duration-200"
           >
-            🚪 Logout
+            Logout
           </button>
         </div>
       </nav>
 
-      {/* ✅ Create Policy Form */}
+      {/* Create Policy Form */}
       <div className="max-w-lg mx-auto mt-8 p-6 bg-white shadow-md rounded-md">
         <h2 className="text-2xl font-bold text-center text-gray-800">Create New Policy</h2>
 

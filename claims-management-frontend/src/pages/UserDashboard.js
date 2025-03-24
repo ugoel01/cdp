@@ -10,9 +10,17 @@ function UserDashboard() {
   const [name, setName] = useState("");
 
   // Logout function
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await api.post("/users/logout");
+      localStorage.clear();
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Still clear localStorage and redirect even if API call fails
+      localStorage.clear();
+      navigate("/login");
+    }
   };
 
   useEffect(() => {
@@ -111,7 +119,7 @@ function UserDashboard() {
 
       {/* ✅ Footer for additional design improvement */}
       <footer className="bg-blue-600 text-white text-center py-4 mt-8 shadow-md">
-        <p>© 2025 Claim Management System. All Rights Reserved.</p>
+        <p> 2025 Claim Management System. All Rights Reserved.</p>
       </footer>
     </div>
   );

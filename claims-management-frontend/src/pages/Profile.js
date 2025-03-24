@@ -5,7 +5,7 @@ import api from "../api";
 function Profile() {
   const navigate = useNavigate();
   
-  // ✅ Get User Data from Local Storage
+  // Get User Data from Local Storage
   const storedName = localStorage.getItem("name") || "User";
   const storedEmail = localStorage.getItem("email") || "Not Available";
   const storedRole = localStorage.getItem("role") || "User";
@@ -17,7 +17,7 @@ function Profile() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // ✅ Update User Details (Save to Local Storage & API)
+  // Update User Details (Save to Local Storage & API)
   const handleUpdate = async (e) => {
     e.preventDefault();
     setError("");
@@ -28,7 +28,7 @@ function Profile() {
       return;
     }
 
-    localStorage.setItem("name", name.trim()); // ✅ Save updated name to Local Storage
+    localStorage.setItem("name", name.trim()); 
 
     // Prepare update data
     const updateData = { name };
@@ -43,13 +43,13 @@ function Profile() {
     try {
       await api.put(`/users/${userId}`, updateData);
       setSuccess("Profile updated successfully.");
-      setPassword(""); // Clear password field after update
+      setPassword(""); 
     } catch (err) {
       setError(err.response?.data?.message || "Failed to update profile.");
     }
   };
 
-  // ✅ Delete User Account
+  // Delete User Account
   const handleDeleteAccount = async () => {
     if (!window.confirm("Are you sure you want to delete your account? This action cannot be undone!")) {
       return;
@@ -57,23 +57,31 @@ function Profile() {
 
     try {
       await api.delete(`/users/${userId}`);
-      localStorage.clear(); // ✅ Remove user data from Local Storage
+      localStorage.clear(); 
       navigate("/signup");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to delete account.");
     }
   };
 
-  // ✅ Logout function
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/login");
+  // Logout function
+  const handleLogout = async () => {
+    try {
+      await api.post("/users/logout");
+      localStorage.clear();
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Still clear localStorage and redirect even if API call fails
+      localStorage.clear();
+      navigate("/login");
+    }
   };
 
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col">
       
-      {/* ✅ Navigation Bar */}
+      {/* Navigation Bar */}
       <nav className="bg-blue-600 text-white px-6 py-4 shadow-md flex justify-between items-center">
         <h1 className="text-xl font-bold">Profile</h1>
         
@@ -96,7 +104,7 @@ function Profile() {
         </div>
       </nav>
 
-      {/* ✅ Profile Form */}
+      {/* Profile Form */}
       <div className="max-w-lg mx-auto mt-8 p-6 bg-white shadow-md rounded-md">
         <h2 className="text-2xl font-bold text-center text-gray-800">Profile Information</h2>
 
