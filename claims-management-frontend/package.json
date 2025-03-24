@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@tailwindcss/cli": "^4.0.3",
-    "axios": "^1.7.9",
+    "axios": "^1.8.4",
     "chart.js": "^4.4.8",
     "cra-template": "1.2.0",
     "lucide-react": "^0.474.0",
