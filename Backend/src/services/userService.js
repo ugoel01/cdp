@@ -255,6 +255,7 @@ exports.buyPolicy = async (userId, policyId, startDate, endDate) => {
     };
 
     await sendPolicyPurchaseEmail(user.email, user.name, policyDetails);
+    await createContact({ name: user.name, email: user.email, segmentIds: 2 });
   } catch (error) {
     console.error("Failed to send policy purchase notification:", error.message);
   }

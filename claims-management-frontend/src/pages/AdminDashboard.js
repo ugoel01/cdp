@@ -87,7 +87,6 @@ function AdminDashboard() {
         }
       } catch (analyticsErr) {
         console.log("Analytics data not available yet:", analyticsErr);
-        // Don't set error state for analytics failure
       }
  
     } catch (err) {
@@ -120,22 +119,23 @@ function AdminDashboard() {
   });
  
   const policyChartData = {
-    labels: Object.keys(policyTypeCount),
+    labels: analyticsData.policyClickData ? Object.keys(analyticsData.policyClickData) : Object.keys(policyTypeCount),
     datasets: [
       {
-        data: Object.values(policyTypeCount),
-        backgroundColor: ["#60a5fa", "#34d399", "#fbbf24", "#f87171"],
+        label: "Policy Views",
+        data: analyticsData.policyClickData ? Object.values(analyticsData.policyClickData) : Object.values(policyTypeCount),
+        backgroundColor: ["#60a5fa", "#34d399", "#fbbf24", "#f87171", "#a78bfa"],
         borderWidth: 1
       }
     ]
   };
  
   const claimChartData = {
-    labels: Object.keys(claimStatusCount),
+    labels: analyticsData.claimStatusData ? Object.keys(analyticsData.claimStatusData) : Object.keys(claimStatusCount),
     datasets: [
       {
         label: "Claims",
-        data: Object.values(claimStatusCount),
+        data: analyticsData.claimStatusData ? Object.values(analyticsData.claimStatusData) : Object.values(claimStatusCount),
         backgroundColor: ["#facc15", "#4ade80", "#f87171"],
         borderWidth: 1
       }

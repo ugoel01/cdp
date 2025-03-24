@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import api from "../api";
-const baseURL = process.env.REACT_APP_UNOMI_API_URL;
+
 function BuyPolicy() {
   const navigate = useNavigate();
   const [policies, setPolicies] = useState([]);
@@ -11,6 +11,7 @@ function BuyPolicy() {
   const [successMessage, setSuccessMessage] = useState("");
   const [purchasedPolicies, setPurchasedPolicies] = useState([]);
   const userId = localStorage.getItem("userID");
+  const sessionId = localStorage.getItem("sessionId") || "1234567890abcdef";
 
   useEffect(() => {
     const fetchPolicies = async () => {
@@ -39,7 +40,6 @@ function BuyPolicy() {
   }, [userId]);
 
   const sendUnomiEvent = async (policy) => {
-    const sessionId = localStorage.getItem('sessionId') || '1234567890abcdef';
     const eventPayload = {
       events: [
         {
@@ -63,18 +63,14 @@ function BuyPolicy() {
     };
 
     try {
-      const response = await fetch(`${baseURL}/cxs/eventcollector`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(eventPayload),
-      });
-      console.log("Unomi event sent successfully:", await response.json());
+      await api.post("/unomi/track", eventPayload); // Using backend proxy route
+      console.log("✅ Unomi event sent");
     } catch (error) {
       console.error("Error sending Unomi event:", error);
     }
   };
 
-  const handlePolicyClick = (policy) => {
+  const handlePolicyTitleClick = (policy) => {
     console.log("Policy clicked:", policy);
     sendUnomiEvent(policy);
   };
@@ -104,9 +100,10 @@ function BuyPolicy() {
 
       toast.success(response.data.message);
       setPurchasedPolicies([...purchasedPolicies, policyId]);
+      setSuccessMessage("🎉 Policy purchased successfully!");
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (err) {
-      const errorMessage = err.response.data.error;
+      const errorMessage = err.response?.data?.error || "Something went wrong";
       toast.error(errorMessage);
       setTimeout(() => setError(""), 3000);
     }
@@ -132,17 +129,28 @@ function BuyPolicy() {
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
             {policies.length > 0 ? (
               policies.map((policy) => (
-                <div key={policy._id} onClick={() => handlePolicyClick(policy)} className="p-6 border border-gray-200 rounded-lg shadow-md bg-gray-50 cursor-pointer hover:bg-gray-100">
-                  <h3 className="text-lg font-semibold text-blue-700">{policy.type}</h3>
+                <div key={policy._id} className="p-6 border border-gray-200 rounded-lg shadow-md bg-gray-50">
+                  <h3
+                    className="text-lg font-semibold text-blue-700 cursor-pointer hover:underline"
+                    onClick={() => handlePolicyTitleClick(policy)}
+                  >
+                    {policy.type}
+                  </h3>
                   <p className="text-gray-600">Policy Number: <span className="font-medium">{policy.policyNumber}</span></p>
                   <p className="text-gray-600">Coverage: <span className="font-medium">${policy.coverageAmount}</span></p>
                   <p className="text-gray-600">Cost: <span className="font-bold text-green-600">${policy.cost}</span></p>
 
-                  <p className="text-gray-600 mt-2">Select Duration:</p>
-                  <div className="flex gap-4 mt-2">
-                    <button onClick={() => handleBuyPolicy(policy._id, 1)} className="w-full text-white py-2 rounded-lg bg-blue-500 hover:bg-blue-600">Buy for 1 Year</button>
-                    <button onClick={() => handleBuyPolicy(policy._id, 2)} className="w-full text-white py-2 rounded-lg bg-blue-500 hover:bg-blue-600">Buy for 2 Years</button>
-                  </div>
+                  {purchasedPolicies.includes(policy._id) ? (
+                    <p className="text-green-600 font-semibold mt-4">Already Purchased ✅</p>
+                  ) : (
+                    <>
+                      <p className="text-gray-600 mt-2">Select Duration:</p>
+                      <div className="flex gap-4 mt-2">
+                        <button onClick={() => handleBuyPolicy(policy._id, 1)} className="w-full text-white py-2 rounded-lg bg-blue-500 hover:bg-blue-600">Buy for 1 Year</button>
+                        <button onClick={() => handleBuyPolicy(policy._id, 2)} className="w-full text-white py-2 rounded-lg bg-blue-500 hover:bg-blue-600">Buy for 2 Years</button>
+                      </div>
+                    </>
+                  )}
                 </div>
               ))
             ) : (
