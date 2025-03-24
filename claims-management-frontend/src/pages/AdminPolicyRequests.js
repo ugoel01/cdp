@@ -76,29 +76,34 @@ function AdminPolicyRequests() {
               </tr>
             </thead>
             <tbody>
-              {requests.map((request) => (
-                <tr key={request._id} className="hover:bg-gray-100">
-                  <td className="border border-gray-300 px-4 py-2">{request.userId.name}</td>
-                  <td className="border border-gray-300 px-4 py-2">{request.policyId.type}</td>
-                  <td className="border border-gray-300 px-4 py-2">${request.policyId.coverageAmount}</td>
-                  <td className="border border-gray-300 px-4 py-2 text-yellow-600 font-semibold">{request.status}</td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    <button 
-                      className="bg-green-500 text-white px-3 py-1 rounded-md mr-2 hover:bg-green-600 transition"
-                      onClick={() => handleApproval(request._id, "Approve")}
-                    >
-                      ✅ Approve
-                    </button>
-                    <button 
-                      className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition"
-                      onClick={() => handleApproval(request._id, "Reject")}
-                    >
-                      ❌ Reject
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+  {requests.map((request) => (
+    <tr key={request._id} className="hover:bg-gray-100">
+      <td className="border border-gray-300 px-4 py-2">{request.userId?.name || "Unknown User"}</td>
+      <td className="border border-gray-300 px-4 py-2">{request.policyId?.type || "N/A"}</td>
+      <td className="border border-gray-300 px-4 py-2">
+        ${request.policyId?.coverageAmount != null ? request.policyId.coverageAmount : "N/A"}
+      </td>
+      <td className="border border-gray-300 px-4 py-2 text-yellow-600 font-semibold">
+        {request.status || "Pending"}
+      </td>
+      <td className="border border-gray-300 px-4 py-2">
+        <button
+          className="bg-green-500 text-white px-3 py-1 rounded-md mr-2 hover:bg-green-600 transition"
+          onClick={() => handleApproval(request._id, "Approve")}
+        >
+          ✅ Approve
+        </button>
+        <button
+          className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition"
+          onClick={() => handleApproval(request._id, "Reject")}
+        >
+          ❌ Reject
+        </button>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
           </table>
         ) : (
           <p className="text-gray-500 text-center mt-6">No pending requests.</p>
