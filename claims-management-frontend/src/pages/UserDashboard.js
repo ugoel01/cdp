@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
+import { useNotification } from "../context/NotificationContext";
 
 function UserDashboard() {
   const navigate = useNavigate();
@@ -8,8 +9,8 @@ function UserDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [name, setName] = useState("");
+  const { showError } = useNotification();
 
-  // Logout function
   const handleLogout = async () => {
     try {
       await api.post("/users/logout");
@@ -17,7 +18,7 @@ function UserDashboard() {
       navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
-      // Still clear localStorage and redirect even if API call fails
+      showError("Logout failed. Please try again.");
       localStorage.clear();
       navigate("/login");
     }
@@ -40,16 +41,18 @@ function UserDashboard() {
 
         if (response.data?.error === "User has not purchased any policies.") {
           setPolicies([]);
-          setError("No policy purchased.");
+          setError(""); 
         } else {
           setPolicies(response.data);
         }
       } catch (err) {
         console.error("API Fetch Error:", err.response?.data || err.message);
         if (err.response && err.response.status === 401) {
+          showError("Your session has expired. Please login again.");
           handleLogout();
         } else {
-          setError(err.response?.data?.message);
+          const errorMessage = err.response?.data?.message || err.response?.data?.error || "Failed to fetch your policies.";
+          showError("You don't have any active policies.");
         }
       } finally {
         setLoading(false);
@@ -61,7 +64,6 @@ function UserDashboard() {
 
   return (
     <div className="bg-gradient-to-br from-blue-50 to-gray-100 min-h-screen flex flex-col">
-      {/* ✅ Navigation Bar */}
       <nav className="bg-blue-600 text-white p-4 shadow-md flex justify-between items-center">
         <h1 className="text-xl font-bold">Claim Management</h1>
         <div className="flex space-x-4">
@@ -76,21 +78,17 @@ function UserDashboard() {
         </div>
       </nav>
 
-      {/* ✅ Main Content */}
       <div className="max-w-6xl mx-auto mt-8 p-6 bg-white shadow-xl rounded-md flex-grow">
         <h2 className="text-3xl font-extrabold text-center text-gray-800">Your Policies</h2>
 
-        {/* Show User Name */}
         <p className="text-gray-500 text-center mt-2">Welcome, <span className="font-semibold">{name}</span>!</p>
 
-        {/* Error Message */}
         {error && (
           <p className="text-red-500 text-center mt-4 bg-red-100 p-2 rounded-md">
             {error}
           </p>
         )}
 
-        {/* Loading Animation */}
         {loading ? (
           <div className="flex justify-center items-center mt-6">
             <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div>
@@ -117,9 +115,8 @@ function UserDashboard() {
         )}
       </div>
 
-      {/* ✅ Footer for additional design improvement */}
       <footer className="bg-blue-600 text-white text-center py-4 mt-8 shadow-md">
-        <p> 2025 Claim Management System. All Rights Reserved.</p>
+        <p>2025 Claim Management System. All Rights Reserved.</p>
       </footer>
     </div>
   );

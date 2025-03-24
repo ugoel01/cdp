@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
+import { useNotification } from "../context/NotificationContext";
 
 function Profile() {
   const navigate = useNavigate();
+  const { showError, showSuccess } = useNotification();
   
   // Get User Data from Local Storage
   const storedName = localStorage.getItem("name") || "User";
@@ -25,6 +27,7 @@ function Profile() {
 
     if (!name.trim()) {
       setError("Name cannot be empty.");
+      showError("Name cannot be empty.");
       return;
     }
 
@@ -35,6 +38,7 @@ function Profile() {
     if (password.trim()) {
       if (password.length < 6) {
         setError("Password must be at least 6 characters long.");
+        showError("Password must be at least 6 characters long.");
         return;
       }
       updateData.password = password.trim();
@@ -43,9 +47,12 @@ function Profile() {
     try {
       await api.put(`/users/${userId}`, updateData);
       setSuccess("Profile updated successfully.");
+      showSuccess("Profile updated successfully.");
       setPassword(""); 
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to update profile.");
+      const errorMessage = err.response?.data?.message || "Failed to update profile.";
+      setError(errorMessage);
+      showError(errorMessage);
     }
   };
 
@@ -60,7 +67,9 @@ function Profile() {
       localStorage.clear(); 
       navigate("/signup");
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to delete account.");
+      const errorMessage = err.response?.data?.message || "Failed to delete account.";
+      setError(errorMessage);
+      showError(errorMessage);
     }
   };
 
@@ -72,6 +81,7 @@ function Profile() {
       navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
+      showError("Logout failed. Please try again.");
       // Still clear localStorage and redirect even if API call fails
       localStorage.clear();
       navigate("/login");
