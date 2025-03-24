@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
-import Chatbot from "../components/Chatbot"; // ✅ Import chatbot
+import Chatbot from "../components/Chatbot"; // Import chatbot
 import { Pie, Bar } from "react-chartjs-2";
+import { useNotification } from "../context/NotificationContext";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -32,7 +33,8 @@ function AdminDashboard() {
   const [users, setUsers] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [showChatbot, setShowChatbot] = useState(false); // ✅ Chatbot toggle state
+  const [showChatbot, setShowChatbot] = useState(false);
+  const { showError } = useNotification();
 
   const handleLogout = async () => {
     try {
@@ -40,6 +42,7 @@ function AdminDashboard() {
       localStorage.clear();
       navigate("/login");
     } catch (err) {
+      showError("Logout failed. Please try again.");
       localStorage.clear();
       navigate("/login");
     }
@@ -67,7 +70,14 @@ function AdminDashboard() {
       purchasedRes.data?.forEach((p) => uniqueUsers.add(p.userId));
       setUsers(uniqueUsers.size);
     } catch (err) {
-      setError("Failed to fetch admin data.");
+      const errorMessage = err.response?.data?.message || err.response?.data?.error || "Failed to fetch admin data.";
+      setError(errorMessage);
+      showError(errorMessage);
+      
+      if (err.response && err.response.status === 401) {
+        showError("Your session has expired. Please login again.");
+        handleLogout();
+      }
     } finally {
       setLoading(false);
     }
@@ -142,7 +152,7 @@ function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-white relative flex flex-col">
-      {/* ✅ Admin Navbar */}
+      {/* Admin Navbar */}
       <nav className="bg-blue-700 text-white px-6 py-4 shadow-md flex justify-between items-center">
         <h1 className="text-2xl font-bold tracking-wide">Admin Dashboard</h1>
         <div className="flex space-x-6">
@@ -157,7 +167,7 @@ function AdminDashboard() {
         </div>
       </nav>
 
-      {/* ✅ Main Content */}
+      {/* Main Content */}
       <main className="max-w-6xl mx-auto p-6 w-full">
         {error && (
           <div className="bg-red-100 text-red-700 p-4 mb-4 rounded-md">{error}</div>
@@ -247,7 +257,16 @@ function AdminDashboard() {
                           <td className="px-4 py-2">{claim._id.slice(0, 8)}</td>
                           <td className="px-4 py-2">${claim.amount || 0}</td>
                           <td className="px-4 py-2">{claim.status}</td>
-                          <td className="px-4 py-2">{new Date(claim.createdAt).toLocaleDateString()}</td>
+                          <td className="px-4 py-2">
+  {claim.dateFiled
+    ? new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+      }).format(new Date(claim.dateFiled))
+    : "N/A"}
+</td>
+
                         </tr>
                       ))}
                     </tbody>
@@ -259,7 +278,7 @@ function AdminDashboard() {
         )}
       </main>
 
-      {/* ✅ Chatbot Button */}
+      {/* Chatbot Button */}
       <button 
         className="fixed bottom-6 right-6 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition flex items-center justify-center w-14 h-14"
         onClick={() => setShowChatbot(!showChatbot)}
@@ -267,7 +286,7 @@ function AdminDashboard() {
         <img src="/chatbot.png" alt="chatbot-icon" className="w-8 h-8" />
       </button>
 
-      {/* ✅ Chatbot Component */}
+      {/* Chatbot Component */}
       {showChatbot && <Chatbot setShowChatbot={setShowChatbot} />}
     </div>
   );

@@ -38,9 +38,9 @@ exports.createClaim = async ({
       userId: userObjectId
     });
 
-    // if (!policyholder) {
-    //   throw new Error("User does not own this policy and cannot file a claim.");
-    // }
+    if (!policyholder) {
+      throw new Error("User does not own this policy and cannot file a claim.");
+    }
 
     // Ensure policy exists
     const policy = await Policy.findById(policyObjectId);
@@ -77,7 +77,6 @@ exports.createClaim = async ({
       
       if (user && user.email) {
         const claimDetails = {
-          claimNumber: savedClaim._id.toString().slice(-8).toUpperCase(),
           policyType: policy.type,
           claimAmount: amount,
           description: "Your insurance claim has been submitted for review"

@@ -19,7 +19,7 @@ const sendClaimSubmissionEmail = async (to, name, claimDetails) => {
 
   try {
     const emailText = await generateContent(prompt);
-    const subject = `Claim #${claimNumber} - Submission Received`;
+    const subject = `Claim - Submission Received`;
 
     await sendEmail(to, subject, emailText);
   } catch (error) {

@@ -10,13 +10,13 @@ const sendWelcomeEmail = require("../utils/sendWelcomeEmail");
 const sendLoginEmail = require("../utils/sendLoginEmail");
 const sendPolicyPurchaseEmail = require("../utils/sendPolicyPurchaseEmail");
 const { createContact } = require("./mauticService");
-const { createOrUpdateProfile } = require("../controllers/unomiController");
 
 require("dotenv").config()
 
+
 const baseURL = process.env.UNOMI_API_URL;
 
-// Register User (With Password Hashing)
+// Register User 
 exports.registerUser = async (data) => {
   let { name, email, password, role, adminKey } = data;
 
@@ -49,6 +49,7 @@ exports.registerUser = async (data) => {
   const newUser = new User({ name, email, password: hashedPassword, role });
   await newUser.save();
 
+
   try {
     // Save to Unomi
     const [firstName, ...lastNameParts] = name.split(" ");
@@ -66,7 +67,11 @@ exports.registerUser = async (data) => {
 
   try {
     // Optionally create contact in Mautic
-    await createContact({ name, email });
+
+  // Only create Mautic contact for regular users
+  if (role === "User") {
+      await createContact({ name, email, segmentIds: 1 });
+  }
     console.log("Contact created in Mautic");
   } catch (error) {
     console.error("Failed to create contact in Mautic:", error.message);
@@ -74,7 +79,6 @@ exports.registerUser = async (data) => {
 
   return newUser;
 };
-// Login User (Compare Hashed Password)
 // Login User (Compare Hashed Password)
 exports.loginUser = async (email, password) => {
   try {
@@ -150,11 +154,10 @@ exports.loginUser = async (email, password) => {
     const loginTime = new Date().toLocaleString('en-US', { 
       timeZone: 'Asia/Kolkata' 
     });
-    const device = "Web Browser"; // You can enhance this to detect actual browser/device
+    const device = "Web Browser";
     await sendLoginEmail(user.email, user.name, loginTime, device);
   } catch (error) {
     console.error("Failed to send login notification:", error);
-    // Continue login process even if email fails
   }
 
   // Return user details & token

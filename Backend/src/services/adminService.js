@@ -2,14 +2,16 @@ const Policy = require("../models/Policy");
 const User = require("../models/User");
 const Claim = require("../models/Claim");
 const Policyholder = require("../models/Policyholder");
-const sendEmail = require("../utils/sendEmail");
 const PolicyRequest = require("../models/PolicyRequest");
 const axios = require('axios');
 require("dotenv").config();
+const sendClaimStatusEmail = require("../utils/sendClaimStatusEmail");
+const sendPolicyApprovalEmail = require("../utils/sendPolicyApprovalEmail");
+const sendEmail = require("../utils/sendEmail"); 
 
 const baseURL = process.env.UNOMI_API_URL;
 
-// Create a New Policy (Admin Only)
+// Create a New Policy
 exports.createPolicy = async (data) => {
   const { policyNumber, type, coverageAmount,cost, startDate, endDate } = data;
 
@@ -188,16 +190,21 @@ exports.updateClaimStatus = async (claimId, status) => {
     console.error("Error sending data to Apache Unomi:", error?.response?.data || error.message);
   }
 
-  // 📧 Send Email Notification to User via SendGrid
+  // Send Email Notification
   const userEmail = claim.userId.email;
   const userName = claim.userId.name;
-  const subject = `Your Claim Status Update - ${status}`;
-  const message = `Hello ${userName},\n\nYour claim (ID: ${claim._id}) has been ${status}.\n\nBest regards,\nInsurance Team`;
 
-  await sendEmail(userEmail, subject, message);
+  const claimDetails = {
+    claimNumber: claim._id,
+    policyType: claim.policyType,      
+    claimAmount: claim.claimAmount
+  };
+
+  await sendClaimStatusEmail(userEmail, userName, claimDetails, status.toLowerCase());
 
   return claim;
 };
+
 
 //Get All Policies (Admin View)
 exports.getAllPolicies = async () => {
@@ -226,7 +233,7 @@ exports.approvePolicyPurchase = async (requestId, action) => {
     let policyholder = await Policyholder.findOne({ userId: user._id });
 
     if (policyholder) {
-      // ✅ Push the full policy object with all required fields
+      // Push the full policy object with all required fields
       policyholder.policies.push({
         policyId: policy._id,
         startDate: policyRequest.startDate,
@@ -234,7 +241,7 @@ exports.approvePolicyPurchase = async (requestId, action) => {
       });
       await policyholder.save();
     } else {
-      // ✅ If no policyholder exists, create one with the correct format
+      // If no policyholder exists, create one with the correct format
       policyholder = new Policyholder({
         userId: user._id,
         policies: [{
@@ -273,21 +280,44 @@ exports.approvePolicyPurchase = async (requestId, action) => {
     policyRequest.status = "Approved";
     await policyRequest.save();
 
-    // Notify user via email
-    const emailSubject = "Policy Purchase Approved";
-    const emailBody = `Dear ${user.name},\n\nYour policy purchase has been approved.\n\nPolicy: ${policy.type}\nCoverage Amount: $${policy.coverageAmount}\n\nRegards,\nInsurance Team`;
+    // Notify user via email using LLM service
+    const policyDetails = {
+      type: policy.type,
+      coverageAmount: policy.coverageAmount,
+      startDate: policyRequest.startDate,
+      endDate: policyRequest.endDate
+    };
 
-    await sendEmail(user.email, emailSubject, emailBody);
+    try {
+      await sendPolicyApprovalEmail(user.email, user.name, policyDetails, 'approved');
+    } catch (emailError) {
+      console.error("Failed to send policy approval email:", emailError);
+
+    }
 
     return { message: "Policy purchase approved and assigned to user." };
   } else if (action === "Reject") {
     policyRequest.status = "Rejected";
     await policyRequest.save();
 
-    // Notify user via email
+    // Notify user via email using LLM service
     const user = await User.findById(policyRequest.userId);
-    if (user) {
-      await sendEmail(user.email, "Policy Purchase Rejected", `Dear ${user.name}, your policy purchase request has been rejected.`);
+    const policy = await Policy.findById(policyRequest.policyId);
+    
+    if (user && policy) {
+      const policyDetails = {
+        type: policy.type,
+        coverageAmount: policy.coverageAmount,
+        startDate: policyRequest.startDate,
+        endDate: policyRequest.endDate
+      };
+
+      try {
+        await sendPolicyApprovalEmail(user.email, user.name, policyDetails, 'rejected');
+      } catch (emailError) {
+        console.error("Failed to send policy rejection email:", emailError);
+        // Continue execution even if email fails
+      }
     }
 
     return { message: "Policy purchase request has been rejected." };

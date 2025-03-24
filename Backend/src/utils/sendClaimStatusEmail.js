@@ -8,7 +8,6 @@ const sendClaimStatusEmail = async (to, name, claimDetails, newStatus) => {
   Write a notification email for a user named ${name} about their insurance claim status update.
   
   Include the following claim details:
-  - Claim reference number: ${claimNumber}
   - Policy type: ${policyType}
   - Claimed amount: $${claimAmount}
   - New status: ${newStatus.toUpperCase()}
@@ -26,12 +25,11 @@ const sendClaimStatusEmail = async (to, name, claimDetails, newStatus) => {
 
   try {
     const emailText = await generateContent(prompt);
-    const subject = `Claim #${claimNumber} Status Update - ${newStatus.toUpperCase()}`;
+    const subject = `Claim Status Update - ${newStatus.toUpperCase()}`;
 
     await sendEmail(to, subject, emailText);
   } catch (error) {
     console.error(`Error sending claim ${newStatus} email:`, error.message);
-    // Log but don't throw to prevent transaction failures if email fails
   }
 };
 
