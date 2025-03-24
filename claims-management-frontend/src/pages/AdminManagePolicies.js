@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
+import axios from 'axios';
+
+
+const baseURL = process.env.UNOMI_API_URL;
 
 function ManagePolicies() {
   const navigate = useNavigate();
@@ -46,7 +50,7 @@ function ManagePolicies() {
   };
 
   // ✅ Handle Update for Coverage Amount & Cost
-  const handleUpdate = async (policyId) => {
+  const handleUpdate = async (policyId, policyNumber) => {
     if (!updatedFields.coverageAmount || !updatedFields.cost) {
       setError("Please enter values for both Coverage Amount and Cost.");
       return;
@@ -54,6 +58,7 @@ function ManagePolicies() {
 
     try {
       await api.put(`/admin/policies/${policyId}`, {
+        policyNumber,
         coverageAmount: updatedFields.coverageAmount,
         cost: updatedFields.cost,
       });
@@ -74,16 +79,33 @@ function ManagePolicies() {
     }
   };
 
-  // ✅ Handle Delete Policy
-  const handleDelete = async (policyId) => {
+ // ✅ Handle Delete Policy
+const handleDelete = async (policyId, policyNumber) => {
+  try {
+    console.log(policyNumber);
+    await api.delete(`/admin/policies/${policyId}?policyNumber=${policyNumber}`);
+    setSuccess("Policy deleted successfully!");
+    setPolicies((prevPolicies) => prevPolicies.filter((policy) => policy._id !== policyId));
+
+    const policyIdNumber = policyNumber.replace(/\D/g, '');
+    // ✅ Send Data to Apache Unomi (Profiles) with Authorization
     try {
-      await api.delete(`/admin/policies/${policyId}`);
-      setSuccess("Policy deleted successfully!");
-      setPolicies((prevPolicies) => prevPolicies.filter((policy) => policy._id !== policyId));
-    } catch (err) {
-      setError(err.response?.data?.message || "Failed to delete policy.");
+      const response = await axios.delete(`${baseURL}/cxs/profiles/profile${policyIdNumber}`, {
+        headers: {
+          Authorization: `Basic ${btoa('karaf:karaf')}`, // ✅ Use btoa for Base64
+          'Content-Type': 'application/json'
+        }
+      });
+
+      console.log("Policy deleted from Apache Unomi:", response.data);
+    } catch (error) {
+      console.error("Error in deleting policy from Apache Unomi:", error?.response?.data || error.message);
     }
-  };
+  } catch (err) {
+    setError(err.response?.data?.message || "Failed to delete policy.");
+  }
+};
+
 
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col">
@@ -160,7 +182,7 @@ function ManagePolicies() {
                       className="w-full p-2 border rounded-lg mt-2"
                     />
                     <button
-                      onClick={() => handleUpdate(policy._id)}
+                      onClick={() => handleUpdate(policy._id, policy.policyNumber)}
                       className="mt-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg w-full transition duration-200"
                     >
                       Save Changes
@@ -177,7 +199,7 @@ function ManagePolicies() {
 
                 {/* ✅ Delete Button */}
                 <button
-                  onClick={() => handleDelete(policy._id)}
+                  onClick={() => handleDelete(policy._id, policy.policyNumber)}
                   className="mt-3 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg w-full transition duration-200"
                 >
                   🗑 Delete Policy

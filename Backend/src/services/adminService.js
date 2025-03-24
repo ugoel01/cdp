@@ -3,14 +3,17 @@ const User = require("../models/User");
 const Claim = require("../models/Claim");
 const Policyholder = require("../models/Policyholder");
 const PolicyRequest = require("../models/PolicyRequest");
+const axios = require('axios');
+require("dotenv").config();
 const sendClaimStatusEmail = require("../utils/sendClaimStatusEmail");
 const sendPolicyApprovalEmail = require("../utils/sendPolicyApprovalEmail");
 const sendEmail = require("../utils/sendEmail"); 
 
+const baseURL = process.env.UNOMI_API_URL;
 
 // Create a New Policy
 exports.createPolicy = async (data) => {
-  const { policyNumber, type, coverageAmount, cost,  startDate, endDate } = data;
+  const { policyNumber, type, coverageAmount,cost, startDate, endDate } = data;
 
   if (!policyNumber || !type || !coverageAmount || !startDate || !endDate) {
     throw new Error("All fields are required.");
@@ -20,24 +23,81 @@ exports.createPolicy = async (data) => {
     policyNumber,
     type,
     coverageAmount: parseFloat(coverageAmount),
-    cost:parseFloat(cost),
+    cost,
     startDate,
     endDate
   });
 
   await newPolicy.save();
+
+  // Extract the numeric part from the policyNumber (e.g., '158' from 'POL158')
+  const policyIdNumber = policyNumber.replace(/\D/g, '');
+
+  // ✅ Send Data to Apache Unomi (Profiles) with Authorization
+  try {
+    const response = await axios.post(`${baseURL}/cxs/profiles`, {
+      itemId: `profile${policyIdNumber}`,
+      properties: {
+        policyNumber,
+        coverageAmount,
+      }
+    }, {
+      headers: {
+        Authorization: `Basic ${Buffer.from('karaf:karaf').toString('base64')}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    console.log("Data sent to Apache Unomi:", response.data);
+  } catch (error) {
+    console.error("Error sending data to Apache Unomi:", error?.response?.data || error.message);
+  }
+
   return newPolicy;
 };
 
-//Update an Existing Policy (Admin Only)
 exports.updatePolicy = async (policyId, data) => {
+  const { policyNumber, coverageAmount, cost } = data;
+
+  console.log("Policy Number:", policyNumber);
+  console.log("Policy ID:", policyId);
+  console.log("Coverage Amount:", coverageAmount);
+  console.log("Cost:", cost);
+
   const updatedPolicy = await Policy.findByIdAndUpdate(policyId, data, { new: true });
   if (!updatedPolicy) throw new Error("Policy not found.");
+
+  // Extract the numeric part from the policyNumber (e.g., '158' from 'POL158')
+  const policyIdNumber = policyNumber.replace(/\D/g, '');
+
+  // ✅ Send Data to Apache Unomi (Profiles) with Authorization
+  try {
+    const response = await axios.post(`${baseURL}/cxs/profiles`, {
+      itemId: `profile${policyIdNumber}`,
+      properties: {
+        policyNumber,
+        coverageAmount,
+      }
+    }, {
+      headers: {
+        Authorization: `Basic ${Buffer.from('karaf:karaf').toString('base64')}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    console.log("Data sent to Apache Unomi:", response.data);
+  } catch (error) {
+    console.error("Error sending data to Apache Unomi:", error?.response?.data || error.message);
+  }
+
   return updatedPolicy;
 };
 
+
+
 //Delete a Policy (Admin Only) - Prevent deletion if purchased by users
-exports.deletePolicy = async (policyId) => {
+exports.deletePolicy = async (policyId, policyNumber) => {
+  console.log("Policy Number:", policyNumber); // ✅ Print Policy Number
+
   const policy = await Policy.findById(policyId);
   if (!policy) throw new Error("Policy not found.");
 
@@ -50,6 +110,7 @@ exports.deletePolicy = async (policyId) => {
   await Policy.deleteOne({ _id: policyId });
   return { message: "Policy deleted successfully." };
 };
+
 
 //Get All Purchased Policies (Admin Only)
 // exports.getAllPurchasedPolicies = async () => {
@@ -93,12 +154,41 @@ exports.getAllPurchasedPolicies = async () => {
 //Update Claim Status (Approve/Reject) (Admin Only)
 exports.updateClaimStatus = async (claimId, status) => {
   const claim = await Claim.findById(claimId).populate("userId", "email name");
-
+  console.log(claim);
+  
   if (!claim) throw new Error("Claim not found.");
   if (claim.status !== "Pending") throw new Error("Claim has already been processed.");
 
   claim.status = status;
   await claim.save();
+  console.log(claim.userId)
+  console.log(claim.policyId)
+  console.log(claim.amount)
+  console.log(claim.dateFiled)
+  console.log(claim.status)
+  try {
+    const response = await axios.post(`${baseURL}/cxs/profiles`, {
+      itemId: `claim${claimId}`,
+      properties: {
+        userInfo: claim.userId.toString(),
+        policyId : claim.policyId,
+        amount : claim.amount,
+        dateFiled: claim.dateFiled,
+        document: claim.document,
+        status: claim.status
+      }
+    }, {
+      headers: {
+        Authorization: `Basic ${Buffer.from('karaf:karaf').toString('base64')}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    console.log("hello mike")
+    console.log("Data sent to Apache Unomi:", response.data);
+    console.log("hello mike testing")
+  } catch (error) {
+    console.error("Error sending data to Apache Unomi:", error?.response?.data || error.message);
+  }
 
   // Send Email Notification
   const userEmail = claim.userId.email;
@@ -163,6 +253,29 @@ exports.approvePolicyPurchase = async (requestId, action) => {
       await policyholder.save();
     }
     
+    try {
+      const response = await axios.post(`${baseURL}/cxs/profiles`, {
+        itemId: `pp${policy._id}`,
+        properties: {
+          _id: policy._id,
+          policyNumber: policy.policyNumber,
+          type: policy.type,
+          startDate: policy.startDate,
+          endDate: policy.endDate,
+          coverageAmount: policy.coverageAmount,
+        }
+      }, {
+        headers: {
+          Authorization: `Basic ${Buffer.from('karaf:karaf').toString('base64')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+    
+      console.log("Data sent to Apache Unomi:", response.data);
+    } catch (error) {
+      console.error("Error sending data to Apache Unomi:", error?.response?.data || error.message);
+    }
+
     // Mark request as approved
     policyRequest.status = "Approved";
     await policyRequest.save();

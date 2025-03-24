@@ -5,39 +5,94 @@
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
+    <meta name="description" content="Claim Management System" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>Claims Management</title>
+    <!-- FontAwesome Icons -->
+    <script src="https://kit.fontawesome.com/ff57b0a3e3.js" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+
+    <title>Claim Management System</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+    <!-- Apache Unomi Tracking Script with Environment Variable Support -->
+    <script>
+      const unomiBaseURL = "%REACT_APP_UNOMI_API_URL%" || "http://localhost:8181";
+      console.log("Using Unomi API URL:", unomiBaseURL);
+
+      const script = document.createElement('script');
+      script.src = `${unomiBaseURL}/context.js`;
+      script.onload = () => console.log("Apache Unomi initialized.");
+      script.onerror = () => console.error("Failed to load Apache Unomi.");
+      document.body.appendChild(script);
+    </script>
+
+    <script>
+      window.cxs = window.cxs || {};
+
+      // Initialize Unomi Context
+      function initializeUnomi() {
+        if (window.cxs && window.cxs.init) {
+          window.cxs.init();
+          console.log("Apache Unomi initialized successfully.");
+        } else {
+          console.error("Failed to initialize Apache Unomi.");
+        }
+      }
+      initializeUnomi();
+
+      // Track Page Views
+      function trackPageView() {
+        if (window.cxs && window.cxs.collectEvents) {
+          window.cxs.collectEvents([{
+            eventType: 'pageView',
+            scope: 'cms-scope',
+            properties: {
+              url: window.location.href,
+              title: document.title
+            },
+            timestamp: new Date().toISOString()
+          }]);
+          console.log("Page view tracked.");
+        } else {
+          console.error("Apache Unomi not available for tracking.");
+        }
+      }
+      trackPageView();
+
+      // Track Custom Events
+      function trackCustomEvent(eventType, properties = {}) {
+        if (window.cxs && window.cxs.collectEvents) {
+          window.cxs.collectEvents([{
+            eventType,
+            scope: 'cms-scope',
+            properties,
+            timestamp: new Date().toISOString()
+          }]);
+          console.log(`Event ${eventType} tracked.`, properties);
+        } else {
+          console.error("Apache Unomi not available for tracking.");
+        }
+      }
+
+      // Example: Track user login
+      function trackLogin(userId) {
+        trackCustomEvent('login', { userId });
+      }
+
+      // Example: Track policy search
+      function trackPolicySearch(query) {
+        trackCustomEvent('policySearch', { query });
+      }
+    </script>
   </body>
 </html>

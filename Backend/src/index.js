@@ -6,8 +6,12 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const setupSwagger = require("./swaggerConfig");
 const connectDB = require("./config/database");
+const unomiRoute = require('./routes/unomiRoutes');
+const unomiController = require('./controllers/unomiController'); 
+
 require("dotenv").config();
 require("./reminderCron");
+
 
 connectDB();
 
@@ -72,6 +76,9 @@ app.use("/policies", policyRoutes);
 app.use("/claims", claimRoutes);
 app.use("/admin", adminRoutes);
 app.use("/chatbot", chatbotRoutes);
+app.use('/unomi', unomiRoute);
+
+app.get('/unomi/active-profile', unomiController.getActiveProfiles);
 
 app.get("/", (req, res) => {
     res.send("Welcome to the StateFull Claims Management System!");
