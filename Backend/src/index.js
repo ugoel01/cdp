@@ -52,7 +52,7 @@ app.use(cookieParser());
 
 const apiLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 100,
+    max: 200,
     message: { error: "Too many requests, please try again later." },
     headers: true,
 });
@@ -69,14 +69,15 @@ const userRoutes = require("./routes/userRoutes");
 const policyRoutes = require("./routes/policyRoutes");
 const claimRoutes = require("./routes/claimRoutes");
 const adminRoutes = require("./routes/adminRoutes");
-const chatbotRoutes = require("./routes/chatbotRoutes"); 
+// const chatbotRoutes = require("./routes/chatbotRoutes");
+const llmChatbotRoutes = require("./routes/llmChatbotRoutes"); 
 
 
 app.use("/users", userRoutes);
 app.use("/policies", policyRoutes);
 app.use("/claims", claimRoutes);
 app.use("/admin", adminRoutes);
-app.use("/chatbot", chatbotRoutes);
+app.use("/llm-chatbot", llmChatbotRoutes);
 app.use('/unomi', unomiRoute);
 
 app.get('/unomi/active-profile', unomiController.getActiveProfiles);

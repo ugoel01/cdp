@@ -171,6 +171,7 @@ exports.updateClaimStatus = async (claimId, status) => {
       itemId: `claim${claimId}`,
       properties: {
         userInfo: claim.userId.toString(),
+        userId: claim.userId._id,
         policyId : claim.policyId,
         amount : claim.amount,
         dateFiled: claim.dateFiled,
@@ -183,9 +184,7 @@ exports.updateClaimStatus = async (claimId, status) => {
         'Content-Type': 'application/json'
       }
     });
-    console.log("hello mike")
     console.log("Data sent to Apache Unomi:", response.data);
-    console.log("hello mike testing")
   } catch (error) {
     console.error("Error sending data to Apache Unomi:", error?.response?.data || error.message);
   }
