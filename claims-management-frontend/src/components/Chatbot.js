@@ -19,13 +19,17 @@ const Chatbot = ({ setShowChatbot }) => {
     setMessages((prevMessages) => [...prevMessages, userMessage]);
 
     try {
-      const response = await api.post("/chatbot", { query: input });
-      const botMessage = { sender: "bot", text: response.data.response };
+      // const response = await api.post("/chatbot", { query: input });
+      const response = await api.post("/llm-chatbot", { query: input });
+
+      // Convert response text to an array of lines to maintain newlines
+      const botMessage = { sender: "bot", text: response.data.response.split("\n") };
+
       setMessages((prevMessages) => [...prevMessages, botMessage]);
     } catch (error) {
       setMessages((prevMessages) => [
         ...prevMessages,
-        { sender: "bot", text: "Error retrieving response. Try again!" },
+        { sender: "bot", text: ["Error retrieving response. Try again!"] },
       ]);
     }
 
@@ -36,7 +40,7 @@ const Chatbot = ({ setShowChatbot }) => {
     <div className="fixed bottom-16 right-6 bg-white border border-gray-300 shadow-lg rounded-lg w-80 h-96 flex flex-col">
       {/* Chatbot Header */}
       <div className="flex justify-between items-center bg-blue-600 text-white px-4 py-2 rounded-t-lg">
-        <h3 className="text-lg font-bold">Ask me Bot</h3>
+        <h3 className="text-lg font-bold">Ask Me Bot</h3>
         <button onClick={() => setShowChatbot(false)} className="text-white text-xl">
           ❌
         </button>
@@ -48,12 +52,16 @@ const Chatbot = ({ setShowChatbot }) => {
           Hi! I'm Ask Me Bot. I am here to help you with fetching data from databases.
         </p>
         {messages.map((msg, index) => (
-          <p
+          <div
             key={index}
-            className={`p-2 rounded-md ${msg.isUser ? "bg-green-500 self-end" : "bg-blue-400 self-start"}`}
+            className={`p-2 rounded-md whitespace-pre-line ${
+              msg.isUser ? "bg-green-500 self-end" : "bg-blue-400 self-start"
+            }`}
           >
-            {msg.text}
-          </p>
+            {Array.isArray(msg.text)
+              ? msg.text.map((line, i) => <p key={i}>{line}</p>)
+              : msg.text}
+          </div>
         ))}
         {/* Empty div to auto-scroll to bottom */}
         <div ref={messagesEndRef} />

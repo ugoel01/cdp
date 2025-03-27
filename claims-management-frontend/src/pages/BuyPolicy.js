@@ -62,6 +62,8 @@ function BuyPolicy() {
       sessionId,
     };
 
+    console.log(eventPayload);
+
     try {
       await api.post("/unomi/track", eventPayload); // Using backend proxy route
       console.log("✅ Unomi event sent");
