@@ -7,7 +7,7 @@ const dbConnect = () => {
         useNewUrlParser:true,
         useUnifiedTopology: true,
     })
-    .then(() => console.log("DB ka Connection is Successful"))
+    .then(() => console.log("DB Connection is Successful"))
     .catch( (error) => {
         console.log("Issue in DB Connection");
         console.error(error.message);

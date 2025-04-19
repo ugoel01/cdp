@@ -500,202 +500,192 @@ router.post("/", async (req, res) => {
             break;
 
         case "getClaims":
-            try {
-                let firstName = null, lastName = null, email = null;
-                let extractedName = null;
-                let responseMessage2 = "";
-                const words = userQuery.toLowerCase().split(" ");
+    try {
+        let firstName = null, lastName = null, email = null;
+        let extractedName = null;
+        let responseMessage2 = "";
+        const words = userQuery.toLowerCase().split(" ");
 
-                // Find "of customer" or just "of" in query
-                const ofCustomerIndex = words.indexOf("customer") > 0 ? words.indexOf("customer") + 1 : -1;
-                const ofIndex = words.indexOf("of") + 1;
+        // Find "of customer" or just "of" in query
+        const ofCustomerIndex = words.indexOf("customer") > 0 ? words.indexOf("customer") + 1 : -1;
+        const ofIndex = words.indexOf("of") + 1;
 
-                if (ofCustomerIndex > 0 && ofCustomerIndex < words.length) {
-                    // If "customer" is present, extract after "customer"
-                    extractedName = words.slice(ofCustomerIndex).join(" ");
-                } else if (ofIndex > 0 && ofIndex < words.length) {
-                    // Otherwise, extract after "of"
-                    extractedName = words.slice(ofIndex).join(" ");
-                }
+        if (ofCustomerIndex > 0 && ofCustomerIndex < words.length) {
+            extractedName = words.slice(ofCustomerIndex).join(" ");
+        } else if (ofIndex > 0 && ofIndex < words.length) {
+            extractedName = words.slice(ofIndex).join(" ");
+        }
 
-                if (extractedName) {
-                    if (extractedName.includes("@")) {
-                        email = extractedName;
-                    } else {
-                        const nameParts = extractedName.split(" ");
-                        firstName = nameParts[0] || null;
-                        lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : null;
-                    }
-                }
-
-                console.log("Extracted Details - First Name:", firstName, "| Last Name:", lastName, "| Email:", email);
-
-                let claims = [];
-                let userId = null;
-                let customerEmail = "Not Available"; 
-
-                if (email || firstName) {
-                    // Step 1: Fetch user profile to get userId
-                    let userSearchCondition = email
-                        ? {
-                            type: "profilePropertyCondition",
-                            parameterValues: {
-                                propertyName: "properties.email",
-                                comparisonOperator: "equals",
-                                propertyValue: email,
-                            },
-                        }
-                        : {
-                            type: "profilePropertyCondition",
-                            parameterValues: {
-                                propertyName: "properties.firstName",
-                                comparisonOperator: "equals",
-                                propertyValue: firstName,
-                            },
-                        };
-
-                    let userSearchResponse = await axios.post(
-                        `${baseURL}/cxs/profiles/search`,
-                        { condition: userSearchCondition },
-                        {
-                            headers: {
-                                Authorization: `Basic ${Buffer.from("karaf:karaf").toString("base64")}`,
-                                "Content-Type": "application/json",
-                            },
-                        }
-                    );
-
-                    let matchedProfiles = userSearchResponse.data.list || [];
-
-                    if (lastName) {
-                        matchedProfiles = matchedProfiles.filter(
-                            (profile) => profile.properties.lastName?.toLowerCase() === lastName.toLowerCase()
-                        );
-                    }
-
-                    if (matchedProfiles.length === 0) {
-                        responseMessage = "No customer found with the given details.";
-                        break;
-                    }
-                    if(matchedProfiles.length == 1){
-                    // Extract user ID and email
-                    userId = matchedProfiles[0].properties.userId;
-                    customerEmail = matchedProfiles[0].properties.email || "Not Available";
-
-                    console.log("User ID found:", userId, "Email:", customerEmail);
-
-                    if (!userId) {
-                        responseMessage = "User profile found but missing userId.";
-                        break;
-                    }
-
-                    // Step 2: Fetch claims for this user ID, ensuring only claim profiles are returned
-                    let claimsResponse = await axios.post(
-                        `${baseURL}/cxs/profiles/search`,
-                        {
-                            condition: {
-                                type: "booleanCondition",
-                                parameterValues: {
-                                    operator: "and",
-                                    subConditions: [
-                                        {
-                                            type: "profilePropertyCondition",
-                                            parameterValues: {
-                                                propertyName: "properties.userId",
-                                                comparisonOperator: "equals",
-                                                propertyValue: userId,
-                                            },
-                                        },
-                                        {
-                                            type: "profilePropertyCondition",
-                                            parameterValues: {
-                                                propertyName: "properties.policyId",
-                                                comparisonOperator: "exists",
-                                            },
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            headers: {
-                                Authorization: `Basic ${Buffer.from("karaf:karaf").toString("base64")}`,
-                                "Content-Type": "application/json",
-                            },
-                        }
-                    );
-
-                    claims = claimsResponse.data.list || [];
-                    }else{
-                        let allClaimsResponse = await axios.post(
-                            `${baseURL}/cxs/profiles/search`,
-                            {
-                                condition: {
-                                    type: "profilePropertyCondition",
-                                    parameterValues: {
-                                        propertyName: "properties.policyId",
-                                        comparisonOperator: "exists",
-                                    },
-                                },
-                            },
-                            {
-                                headers: {
-                                    Authorization: `Basic ${Buffer.from("karaf:karaf").toString("base64")}`,
-                                    "Content-Type": "application/json",
-                                },
-                            }
-                        );
-    
-                        claims = allClaimsResponse.data.list || [];
-                        responseMessage2 = "Getting all claims as name is not unique. To get for specific customer, provide email Id. \n"
-                    }
-                } else {
-                    // Step 3: Fetch all claims only (not user profiles)
-                    console.log("Fetching all claims...");
-                    let allClaimsResponse = await axios.post(
-                        `${baseURL}/cxs/profiles/search`,
-                        {
-                            condition: {
-                                type: "profilePropertyCondition",
-                                parameterValues: {
-                                    propertyName: "properties.policyId",
-                                    comparisonOperator: "exists",
-                                },
-                            },
-                        },
-                        {
-                            headers: {
-                                Authorization: `Basic ${Buffer.from("karaf:karaf").toString("base64")}`,
-                                "Content-Type": "application/json",
-                            },
-                        }
-                    );
-
-                    claims = allClaimsResponse.data.list || [];
-                }
-
-                console.log("Claims found:", claims.length);
-
-                if (claims.length === 0) {
-                    responseMessage = email || firstName ? "No claims found for the user." : "No claims available.";
-                    break;
-                }
-
-                // Step 4: Format the response
-                responseMessage = email || firstName ? `Claims for user (${customerEmail}):\n\n ${responseMessage2}` : `All claims:\n\n`;
-
-                claims.forEach((claim, index) => {
-
-                    const claimDetails = claim.properties;
-                    const email = (claimDetails.userInfo.match(/email:\s*'([^']+)'/))[1]
-                    responseMessage += `${index + 1}. Email: ${email} \n Policy Id: ${claimDetails.policyId} \n Amount: ₹${claimDetails.amount} \n Status: ${claimDetails.status} \n Date: ${new Date(claimDetails.dateFiled).toDateString()}\n`;
-                });
-
-            } catch (error) {
-                console.error("Error retrieving claims:", error.response?.data || error.message);
-                responseMessage = "An error occurred while retrieving claims.";
+        if (extractedName) {
+            if (extractedName.includes("@")) {
+                email = extractedName;
+            } else {
+                const nameParts = extractedName.split(" ");
+                firstName = nameParts[0] || null;
+                lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : null;
             }
+        }
+
+        console.log("Extracted Details - First Name:", firstName, "| Last Name:", lastName, "| Email:", email);
+
+        let claims = [];
+        let customerEmail = "Not Available";
+        let uniqueUserIds = new Set();
+
+        if (email || firstName) {
+            // Step 1: Fetch all profiles matching email or name
+            let userSearchCondition = email
+                ? {
+                    type: "profilePropertyCondition",
+                    parameterValues: {
+                        propertyName: "properties.email",
+                        comparisonOperator: "equals",
+                        propertyValue: email,
+                    },
+                }
+                : {
+                    type: "profilePropertyCondition",
+                    parameterValues: {
+                        propertyName: "properties.firstName",
+                        comparisonOperator: "equals",
+                        propertyValue: firstName,
+                    },
+                };
+
+            let userSearchResponse = await axios.post(
+                `${baseURL}/cxs/profiles/search`,
+                { condition: userSearchCondition },
+                {
+                    headers: {
+                        Authorization: `Basic ${Buffer.from("karaf:karaf").toString("base64")}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            let matchedProfiles = userSearchResponse.data.list || [];
+
+            if (lastName) {
+                matchedProfiles = matchedProfiles.filter(
+                    (profile) => profile.properties.lastName?.toLowerCase() === lastName.toLowerCase()
+                );
+            }
+
+            if (matchedProfiles.length === 0) {
+                responseMessage = "No customer found with the given details.";
+                break;
+            }
+
+            // Step 2: Identify unique user IDs (use properties.userId instead of itemId)
+            matchedProfiles.forEach(profile => {
+                if (profile.properties.userId) {
+                    uniqueUserIds.add(profile.properties.userId);
+                }
+            });
+
+            console.log("Unique user IDs:", Array.from(uniqueUserIds));
+
+            if (uniqueUserIds.size > 1) {
+                responseMessage2 = "Multiple profiles found for this customer. Fetching claims for all profiles.\n";
+            }
+
+            if (uniqueUserIds.size === 0) {
+                responseMessage = "User profile found but missing userId.";
+                break;
+            }
+
+            // Step 3: Fetch claims for all unique user profiles
+            let claimsPromises = Array.from(uniqueUserIds).map(userId =>
+                axios.post(
+                    `${baseURL}/cxs/profiles/search`,
+                    {
+                        condition: {
+                            type: "booleanCondition",
+                            parameterValues: {
+                                operator: "and",
+                                subConditions: [
+                                    {
+                                        type: "profilePropertyCondition",
+                                        parameterValues: {
+                                            propertyName: "properties.userId",
+                                            comparisonOperator: "equals",
+                                            propertyValue: userId,
+                                        },
+                                    },
+                                    {
+                                        type: "profilePropertyCondition",
+                                        parameterValues: {
+                                            propertyName: "properties.policyId",
+                                            comparisonOperator: "exists",
+                                        },
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        headers: {
+                            Authorization: `Basic ${Buffer.from("karaf:karaf").toString("base64")}`,
+                            "Content-Type": "application/json",
+                        },
+                    }
+                )
+            );
+
+            let claimsResponses = await Promise.all(claimsPromises);
+            claims = claimsResponses.flatMap(response => response.data.list || []);
+            customerEmail = email || "Not Available";
+
+        } else {
+            // Step 4: Fetch all claims (if no specific customer was provided)
+            console.log("Fetching all claims...");
+            let allClaimsResponse = await axios.post(
+                `${baseURL}/cxs/profiles/search`,
+                {
+                    condition: {
+                        type: "profilePropertyCondition",
+                        parameterValues: {
+                            propertyName: "properties.policyId",
+                            comparisonOperator: "exists",
+                        },
+                    },
+                },
+                {
+                    headers: {
+                        Authorization: `Basic ${Buffer.from("karaf:karaf").toString("base64")}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            claims = allClaimsResponse.data.list || [];
+        }
+
+        console.log("Claims found:", claims.length);
+
+        if (claims.length === 0) {
+            responseMessage = email || firstName ? "No claims found for the user." : "No claims available.";
             break;
+        }
+
+        // Step 5: Format the response
+        responseMessage = email || firstName ? `Claims for user :\n\n${responseMessage2}` : `All claims:\n\n`;
+
+        claims.forEach((claim, index) => {
+            const claimDetails = claim.properties;
+            const emailMatch = claimDetails.userInfo.match(/email:\s*'([^']+)'/);
+            const emailExtracted = emailMatch ? emailMatch[1] : "Not Available";
+
+            responseMessage += `${index + 1}. Email: ${emailExtracted} \n Policy Id: ${claimDetails.policyId} \n Amount: ₹${claimDetails.amount} \n Status: ${claimDetails.status} \n Date: ${new Date(claimDetails.dateFiled).toDateString()}\n`;
+        });
+
+    } catch (error) {
+        console.error("Error retrieving claims:", error.response?.data || error.message);
+        responseMessage = "An error occurred while retrieving claims.";
+    }
+    break;
+
+
 
         default:
             responseMessage = "I don't have an answer for that.";
